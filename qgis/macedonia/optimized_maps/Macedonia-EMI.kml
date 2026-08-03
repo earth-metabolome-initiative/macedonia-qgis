@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Macedonia EMI field area</name>
+    <Placemark>
+      <name>Macedonia-EMI</name>
+      <description>Buffered fieldwork extent derived from locations supplied by the research team.</description>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <coordinates>
+              20.787,41.981,0 20.892,41.981,0 20.892,42.053,0 20.787,42.053,0 20.787,41.981,0
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>
+  </Document>
+</kml>

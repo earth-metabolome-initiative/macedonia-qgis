@@ -1,0 +1,16 @@
+iNaturalist species counts for the Macedonia field region
+created_at_utc=2026-08-03T13:24:27.641492+00:00
+source=pyinaturalist.get_observation_species_counts
+place_id=
+country_code=
+country_name=
+bbox_swlat=41.981
+bbox_swlng=20.787
+bbox_nelat=42.053
+bbox_nelng=20.892
+quality_grade=any
+iconic_taxa=
+per_page=200
+max_pages=
+row_count=274
+note=The default query uses a bounding box around the Macedonia polygon. Country queries use iNaturalist place IDs.
