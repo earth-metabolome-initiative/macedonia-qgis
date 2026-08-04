@@ -27,33 +27,26 @@ Fetch the small field-region list:
 
 ```bash
 uv run python scripts/fetch_inaturalist_species.py
-uv run python scripts/build_lightweight_species_lookup.py
 ```
 
-For a resolved lookup including higher taxa:
+The regional fetch is deliberately not filtered by iconic taxon, so all
+observed kingdoms remain candidates. Resolve them with Catalogue of Life and
+include major higher ranks in the QField lookup:
 
 ```bash
-uv run python scripts/resolve_taxa.py \
-  --input data/inaturalist/macedonia_species_observations.csv \
-  --header scientific_name --dedupe-input --force
-
-uv run python scripts/build_higher_taxa_input.py \
-  --input data/inaturalist/macedonia_species_observations_resolved.csv \
-  --output data/inaturalist/macedonia_higher_taxa.csv
-
-uv run python scripts/resolve_taxa.py \
-  --input data/inaturalist/macedonia_higher_taxa.csv \
-  --header scientific_name --dedupe-input --force
-
-uv run python scripts/combine_species_and_higher_taxa.py \
-  --species data/inaturalist/macedonia_species_observations_resolved.csv \
-  --higher-taxa data/inaturalist/macedonia_higher_taxa_resolved.csv \
-  --output qgis/macedonia/species_list.csv
+uv run python scripts/build_col_taxon_lookup.py
 
 ogr2ogr -f GPKG qgis/macedonia/species_list.gpkg \
   qgis/macedonia/species_list.csv -nln species_list -nlt NONE \
   -overwrite -oo EMPTY_STRING_AS_NULL=YES
 ```
+
+The resolver is pinned to the published Catalogue of Life 2026-07-17 XR
+release (ChecklistBank dataset `315834`, DOI `10.48580/dgykv`) rather than the
+mutable CoL working project. Review rows whose `col_match_type` is
+`unresolved`; they remain usable under their iNaturalist name but have no CoL
+identifier or classification. Do not accept a genus-level CoL match as a
+species resolution.
 
 ## Exporting a lightweight offline basemap
 

@@ -51,18 +51,25 @@ uv run python scripts/fetch_inaturalist_species.py
 ```
 
 The default output is
-`data/inaturalist/macedonia_species_observations.csv`. To rebuild a richer
-lookup with Global Names resolution and higher taxa, follow the commands in
-`CONTRIB.md`.
+`data/inaturalist/macedonia_species_observations.csv`. This source query does
+not restrict iconic taxa, so locally observed plants, animals, fungi, and
+protists are retained.
 
-Build the compact direct lookup with:
+Resolve the names and classifications with the pinned Catalogue of Life
+2026-07-17 XR release, then build the compact field lookup:
 
 ```bash
-uv run python scripts/build_lightweight_species_lookup.py
+uv run python scripts/build_col_taxon_lookup.py
 ogr2ogr -f GPKG qgis/macedonia/species_list.gpkg \
   qgis/macedonia/species_list.csv -nln species_list -nlt NONE \
   -overwrite -oo EMPTY_STRING_AS_NULL=YES
 ```
+
+The field list contains every regional species plus its Catalogue of Life
+domain, kingdom, phylum, class, order, family, and genus. The pinned release is
+ChecklistBank dataset `315834`, DOI `10.48580/dgykv`. An unmatched source name
+is retained explicitly as an iNaturalist fallback instead of being discarded
+or silently assigned to a fuzzy match.
 
 ## Checks
 

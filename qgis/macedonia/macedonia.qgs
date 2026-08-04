@@ -1489,7 +1489,7 @@ def my_form_open(dialog, layer, feature):
                 <Option type="bool" value="false" name="AllowAddFeatures"/>
                 <Option type="bool" value="true" name="AllowNULL"/>
                 <Option type="bool" value="true" name="FetchLimitActive"/>
-                <Option type="int" value="100" name="FetchLimitNumber"/>
+                <Option type="int" value="1000" name="FetchLimitNumber"/>
                 <Option type="bool" value="false" name="MapIdentification"/>
                 <Option type="bool" value="false" name="ReadOnly"/>
                 <Option type="QString" value="./species_list.gpkg|layername=species_list" name="ReferencedLayerDataSource"/>
@@ -1857,37 +1857,37 @@ def my_form_open(dialog, layer, feature):
         <policy policy="DefaultValue" field="taxon_name_final"/>
       </splitPolicies>
       <duplicatePolicies>
-        <policy policy="Duplicate" field="fid"/>
-        <policy policy="Duplicate" field="collector_fullname"/>
-        <policy policy="Duplicate" field="observation_subject"/>
-        <policy policy="Duplicate" field="inat_upload"/>
-        <policy policy="Duplicate" field="is_wild"/>
-        <policy policy="Duplicate" field="taxon_name"/>
-        <policy policy="Duplicate" field="no_name_on_list"/>
-        <policy policy="Duplicate" field="name_proposition"/>
-        <policy policy="Duplicate" field="sample_id"/>
-        <policy policy="Duplicate" field="picture_panel"/>
-        <policy policy="Duplicate" field="picture_general"/>
-        <policy policy="Duplicate" field="picture_detail"/>
-        <policy policy="Duplicate" field="picture_cut"/>
-        <policy policy="Duplicate" field="picture_panel_label"/>
-        <policy policy="Duplicate" field="picture_free"/>
-        <policy policy="Duplicate" field="x_coord"/>
-        <policy policy="Duplicate" field="y_coord"/>
-        <policy policy="Duplicate" field="ipen"/>
-        <policy policy="Duplicate" field="herbivory_(percent)"/>
-        <policy policy="Duplicate" field="comment_eco"/>
-        <policy policy="Duplicate" field="soil_type"/>
-        <policy policy="Duplicate" field="weather"/>
-        <policy policy="Duplicate" field="temperature_c"/>
-        <policy policy="Duplicate" field="comment_env"/>
-        <policy policy="Duplicate" field="date"/>
-        <policy policy="Duplicate" field="collector_orcid"/>
-        <policy policy="Duplicate" field="collector_inat"/>
-        <policy policy="UnsetField" field="uuid_qfield"/>
-        <policy policy="Duplicate" field="MatchedCanonical"/>
-        <policy policy="Duplicate" field="TaxonId"/>
-        <policy policy="Duplicate" field="taxon_name_final"/>
+        <policy policy="DefaultValue" field="fid"/>
+        <policy policy="DefaultValue" field="collector_fullname"/>
+        <policy policy="DefaultValue" field="observation_subject"/>
+        <policy policy="DefaultValue" field="inat_upload"/>
+        <policy policy="DefaultValue" field="is_wild"/>
+        <policy policy="DefaultValue" field="taxon_name"/>
+        <policy policy="DefaultValue" field="no_name_on_list"/>
+        <policy policy="DefaultValue" field="name_proposition"/>
+        <policy policy="DefaultValue" field="sample_id"/>
+        <policy policy="DefaultValue" field="picture_panel"/>
+        <policy policy="DefaultValue" field="picture_general"/>
+        <policy policy="DefaultValue" field="picture_detail"/>
+        <policy policy="DefaultValue" field="picture_cut"/>
+        <policy policy="DefaultValue" field="picture_panel_label"/>
+        <policy policy="DefaultValue" field="picture_free"/>
+        <policy policy="DefaultValue" field="x_coord"/>
+        <policy policy="DefaultValue" field="y_coord"/>
+        <policy policy="DefaultValue" field="ipen"/>
+        <policy policy="DefaultValue" field="herbivory_(percent)"/>
+        <policy policy="DefaultValue" field="comment_eco"/>
+        <policy policy="DefaultValue" field="soil_type"/>
+        <policy policy="DefaultValue" field="weather"/>
+        <policy policy="DefaultValue" field="temperature_c"/>
+        <policy policy="DefaultValue" field="comment_env"/>
+        <policy policy="DefaultValue" field="date"/>
+        <policy policy="DefaultValue" field="collector_orcid"/>
+        <policy policy="DefaultValue" field="collector_inat"/>
+        <policy policy="DefaultValue" field="uuid_qfield"/>
+        <policy policy="DefaultValue" field="MatchedCanonical"/>
+        <policy policy="DefaultValue" field="TaxonId"/>
+        <policy policy="DefaultValue" field="taxon_name_final"/>
       </duplicatePolicies>
       <defaults>
         <default expression="" applyOnUpdate="0" field="fid"/>
@@ -1950,7 +1950,7 @@ def my_form_open(dialog, layer, feature):
         <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="date"/>
         <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="collector_orcid"/>
         <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="collector_inat"/>
-        <constraint constraints="4" notnull_strength="0" unique_strength="0" exp_strength="1" field="uuid_qfield"/>
+        <constraint constraints="7" notnull_strength="1" unique_strength="1" exp_strength="1" field="uuid_qfield"/>
         <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="MatchedCanonical"/>
         <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="TaxonId"/>
         <constraint constraints="0" notnull_strength="0" unique_strength="0" exp_strength="0" field="taxon_name_final"/>
@@ -1964,7 +1964,7 @@ def my_form_open(dialog, layer, feature):
         <constraint desc="" exp="" field="taxon_name"/>
         <constraint desc="" exp="" field="no_name_on_list"/>
         <constraint desc="" exp="" field="name_proposition"/>
-        <constraint desc="sample id pattern" exp="regexp_match(&quot;sample_id&quot;, '^mcdn_[0-9]{6}$')" field="sample_id"/>
+        <constraint desc="Sample ID must match mcdn_ followed by six digits" exp="coalesce(regexp_match(trim(&quot;sample_id&quot;), '^mcdn_[0-9]{6}$'), false)" field="sample_id"/>
         <constraint desc="" exp="" field="picture_panel"/>
         <constraint desc="" exp="" field="picture_general"/>
         <constraint desc="" exp="" field="picture_detail"/>
@@ -1983,7 +1983,7 @@ def my_form_open(dialog, layer, feature):
         <constraint desc="" exp="" field="date"/>
         <constraint desc="" exp="" field="collector_orcid"/>
         <constraint desc="" exp="" field="collector_inat"/>
-        <constraint desc="" exp="  coalesce(&quot;picture_panel&quot;, '') &lt;> ''&#xa;  AND coalesce(&quot;picture_general&quot;, '') &lt;> ''&#xa;  AND coalesce(&quot;picture_detail&quot;, '') &lt;> ''&#xa;  AND coalesce(&quot;picture_cut&quot;, '') &lt;> ''&#xa;  AND coalesce(&quot;picture_panel_label&quot;, '') &lt;> ''" field="uuid_qfield"/>
+        <constraint desc="A valid unique UUID and all five required photographs are required" exp="coalesce(regexp_match(&quot;uuid_qfield&quot;, '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'), false)&#xa;  AND coalesce(&quot;picture_panel&quot;, '') &lt;> ''&#xa;  AND coalesce(&quot;picture_general&quot;, '') &lt;> ''&#xa;  AND coalesce(&quot;picture_detail&quot;, '') &lt;> ''&#xa;  AND coalesce(&quot;picture_cut&quot;, '') &lt;> ''&#xa;  AND coalesce(&quot;picture_panel_label&quot;, '') &lt;> ''" field="uuid_qfield"/>
         <constraint desc="" exp="" field="MatchedCanonical"/>
         <constraint desc="" exp="" field="TaxonId"/>
         <constraint desc="" exp="" field="taxon_name_final"/>
@@ -2060,7 +2060,7 @@ def my_form_open(dialog, layer, feature):
         <labelStyle overrideLabelColor="0" labelColor="" overrideLabelFont="0">
           <labelFont bold="0" underline="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" italic="0" style="" strikethrough="0"/>
         </labelStyle>
-        <attributeEditorContainer collapsed="0" visibilityExpression="&quot;picture_general&quot; IS NULL AND &quot;picture_panel&quot; IS NULL AND&#xa;&quot;picture_panel_label&quot; IS NULL AND &quot;picture_detail&quot; IS NULL AND&#xa;&quot;picture_cut&quot; IS NULL" showLabel="1" groupBox="1" name="sample_id" columnCount="1" type="GroupBox" horizontalStretch="0" visibilityExpressionEnabled="1" collapsedExpressionEnabled="0" verticalStretch="0" collapsedExpression="regexp_match(&quot;sample_id&quot;, '^mcdn_[0-9]{6}$')">
+        <attributeEditorContainer collapsed="0" visibilityExpression="" showLabel="1" groupBox="1" name="sample_id" columnCount="1" type="GroupBox" horizontalStretch="0" visibilityExpressionEnabled="0" collapsedExpressionEnabled="0" verticalStretch="0" collapsedExpression="coalesce(regexp_match(trim(&quot;sample_id&quot;), '^mcdn_[0-9]{6}$'), false)">
           <labelStyle overrideLabelColor="0" labelColor="" overrideLabelFont="0">
             <labelFont bold="0" underline="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0" italic="0" style="" strikethrough="0"/>
           </labelStyle>
@@ -4048,7 +4048,7 @@ def my_form_open(dialog, layer, feature):
       </reuseLastValue>
       <dataDefinedFieldProperties/>
       <widgets/>
-      <previewExpression>ScientificName</previewExpression>
+      <previewExpression>&quot;ScientificName&quot; || ' — ' || coalesce(&quot;taxon_rank&quot;, 'unranked')</previewExpression>
       <mapTip enabled="1"></mapTip>
     </maplayer>
   </projectlayers>

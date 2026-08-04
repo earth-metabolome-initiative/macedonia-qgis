@@ -27,6 +27,32 @@ This project was derived from `/Users/pma/git_repos/EMI/manaslu-qgis` on
 - `tests/test_project_template.py` guards the prefix, attachment paths, empty
   observation store, absence of a committed-basemap reference, and containment
   of all supplied coordinates within the AOI.
+- The sample-ID tab is always visible. Do not make its visibility depend on
+  attachment fields: copied or restored attachment values can otherwise hide
+  the scanner before a valid sample ID has been entered.
+- Observation duplication resets all attributes to their defaults, including
+  the sample ID, UUID, attachment paths, coordinates, and timestamp. This
+  prevents a copied feature from silently inheriting another sample's identity
+  or metadata.
+- `observations.gpkg` enforces valid, unique `mcdn_######` sample IDs and valid,
+  unique UUIDs with database indexes and triggers in addition to QGIS form
+  constraints. Reapply `scripts/harden_observations.sql` after rebuilding the
+  GeoPackage schema. The migration caveat is that invalid offline deltas will
+  now fail explicitly instead of creating malformed records; test a full
+  QFieldCloud download/edit/push cycle and resolve rejected legacy deltas
+  before field deployment.
+- The offline taxon lookup now resolves regional iNaturalist names against the
+  pinned Catalogue of Life 2026-07-17 XR release and includes domain, kingdom,
+  phylum, class, order, family, and genus choices. The source fetch remains
+  unfiltered by iconic taxon so animals, fungi, protists, and plants are all
+  retained. Pinning a published CoL release makes rebuilds reproducible; for a
+  future project, deliberately update the dataset key, release label, DOI, and
+  tests together after checking coverage. Never substitute the mutable CoL
+  working dataset without documenting that migration caveat.
+- QField displays the scientific name together with its rank and fetches the
+  complete lightweight lookup. `build_col_taxon_lookup.py` keeps unmatched
+  source species as explicit fallbacks rather than silently accepting a
+  higher-rank or wrong-kingdom match.
 
 ## New-project substitution checklist
 
