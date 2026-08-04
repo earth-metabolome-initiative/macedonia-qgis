@@ -12,15 +12,65 @@ PROJECT = ROOT / "qgis/macedonia/macedonia.qgs"
 
 
 def test_project_is_valid_xml_and_uses_macedonia_identifiers() -> None:
-    ET.parse(PROJECT)
+    root = ET.parse(PROJECT).getroot()
     project_text = PROJECT.read_text(encoding="utf-8")
 
     assert "mnsl_" not in project_text
     assert "^mcdn_[0-9]{6}$" in project_text
     assert project_text.count("DCIM/macedonia/") == 6
     assert "optimized_maps/basemap.mbtiles" not in project_text
-    assert "ScientificName&quot; || ' — ' || coalesce(&quot;taxon_rank&quot;" in project_text
-    assert 'value="1000" name="FetchLimitNumber"' in project_text
+    species_layer = next(
+        layer
+        for layer in root.findall(".//maplayer")
+        if layer.findtext("layername") == "species_list"
+    )
+    assert species_layer.findtext("previewExpression") == (
+        '"ScientificName" || \' — \' || coalesce("taxon_rank", \'unranked\')'
+    )
+    assert any(
+        option.get("value") == "1000"
+        for option in root.findall(".//Option[@name='FetchLimitNumber']")
+    )
+
+
+def test_online_basemap_is_preserved_by_qfieldcloud_packaging() -> None:
+    root = ET.parse(PROJECT).getroot()
+    basemap = next(
+        layer
+        for layer in root.findall(".//maplayer")
+        if layer.findtext("layername") == "google-earth-connection"
+    )
+    cloud_action = basemap.find(
+        ".//Option[@name='QFieldSync/cloud_action']"
+    )
+
+    assert basemap.findtext("provider") == "wms"
+    assert cloud_action is not None
+    assert cloud_action.get("value") == "no_action"
+
+
+def test_ignored_offline_satellite_is_configured_for_qfield_packaging() -> None:
+    root = ET.parse(PROJECT).getroot()
+    basemap = next(
+        layer
+        for layer in root.findall(".//maplayer")
+        if layer.findtext("layername")
+        == "satellite (offline — Google z18)"
+    )
+    cloud_action = basemap.find(
+        ".//Option[@name='QFieldSync/cloud_action']"
+    )
+
+    assert "qgis/macedonia/optimized_maps/macedonia_google_satellite_*.tif" in (
+        ROOT / ".gitignore"
+    ).read_text(encoding="utf-8")
+    assert basemap.findtext("provider") == "gdal"
+    assert basemap.get("hasScaleBasedVisibilityFlag") == "0"
+    assert basemap.findtext("datasource") == (
+        "./optimized_maps/macedonia_google_satellite_z18.tif"
+    )
+    assert cloud_action is not None
+    assert cloud_action.get("value") == "no_action"
 
 
 def test_template_observations_are_empty() -> None:

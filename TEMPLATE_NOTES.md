@@ -16,8 +16,10 @@ This project was derived from `/Users/pma/git_repos/EMI/manaslu-qgis` on
   collaborators without accounts can collect records.
 - The observation preview now uses the current `taxon_name_final` field rather
   than the stale `TaxonomicName` expression inherited from Manaslu.
-- Only a buffered AOI, orientation-point CSV, and regional species lookup are
-  versioned. Offline imagery is generated at packaging time and ignored.
+- A reproducible builder and exact source provenance are versioned for the
+  offline satellite background, while the generated GeoTIFF itself stays
+  ignored. Field photographs, QFieldSync state, generated rasters, and
+  generated MBTiles remain excluded.
 - `build_lightweight_species_lookup.py` provides a compact, no-resolver
   fallback that maps iNaturalist scientific names and IDs into the three QField
   relation fields. Use the full resolver workflow when provenance-quality
@@ -25,8 +27,8 @@ This project was derived from `/Users/pma/git_repos/EMI/manaslu-qgis` on
 - Original stakeholder location text is retained verbatim under `docs/` so
   later geographic interpretations remain auditable.
 - `tests/test_project_template.py` guards the prefix, attachment paths, empty
-  observation store, absence of a committed-basemap reference, and containment
-  of all supplied coordinates within the AOI.
+  observation store, versioned offline-raster reference, absence of a generated
+  MBTiles reference, and containment of all supplied coordinates within the AOI.
 - The sample-ID tab is always visible. Do not make its visibility depend on
   attachment fields: copied or restored attachment values can otherwise hide
   the scanner before a valid sample ID has been entered.
@@ -53,6 +55,24 @@ This project was derived from `/Users/pma/git_repos/EMI/manaslu-qgis` on
   complete lightweight lookup. `build_col_taxon_lookup.py` keeps unmatched
   source species as explicit fallbacks rather than silently accepting a
   higher-rank or wrong-kingdom match.
+- The online basemap uses the QFieldCloud `no_action` layer action so raw
+  repository deployments retain direct access to the tile service. The
+  `remove` action caused QFieldCloud packaging to strip the only background
+  layer, while QFieldSync's "use current project as template" conversion
+  silently corrected it. Existing projects must change the basemap cloud
+  action to direct access, upload the project again, and re-download it on
+  devices; this does not create an offline basemap.
+- The offline background is a locally generated Google Satellite zoom-18 mosaic
+  stored as a tiled, JPEG-compressed GeoTIFF with internal overviews. It replaces the 10 m
+  Sentinel-2 experiment, whose pixelation was inadequate for field navigation,
+  and avoids QFieldCloud basemap generation, which the server disables. Its
+  nominal ground resolution here is about 0.44 m/pixel and the layer has no scale
+  visibility limit, so the overview pyramid supports every zoom level. The
+  migration caveat is that the tile endpoint and imagery can change, rebuilding
+  requires network access, redistribution terms must be reviewed, and the
+  generated TIFF must remain ignored by Git and be transferred separately by
+  the QField packaging/deployment workflow. Future AOIs must update the raster,
+  metadata, relative layer reference, and tests together.
 
 ## New-project substitution checklist
 

@@ -1,0 +1,13 @@
+# Macedonia offline satellite basemap provenance
+
+Source: Google Maps satellite XYZ tiles
+Tile endpoint: https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}
+Zoom: 18
+Nominal Web Mercator pixel size: 0.597 metres
+Buffered requested bounds (west, south, east, north): 20.777, 41.971, 20.902, 42.063
+Tile range (x_min, x_max, y_min, y_max): 146201, 146292, 97250, 97340
+Tile count: 8372
+Output CRS: EPSG:3857
+Attribution: Satellite imagery served by Google Maps
+Build note: rebuilds require network access and the provider may change its tiles or endpoint.
+Terms: https://www.google.com/help/terms_maps/

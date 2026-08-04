@@ -48,29 +48,33 @@ mutable CoL working project. Review rows whose `col_match_type` is
 identifier or classification. Do not accept a genus-level CoL match as a
 species resolution.
 
-## Exporting a lightweight offline basemap
+## Rebuilding the lightweight offline satellite map
 
-In QGIS, use `Project > Properties > QField` and keep the AOI at
-`41.981,20.787,42.053,20.892`. Start with zoom levels 14–17 and reduce the
-maximum zoom if the export is too large. Export to:
+The locally generated offline background is a Google Satellite zoom-18 mosaic.
+At the field area's latitude its nominal ground resolution is about 0.44
+m/pixel. The raster is ignored by Git. Exact endpoint, tile range, count,
+requested bounds, and attribution are stored beside it in
+`qgis/macedonia/optimized_maps/macedonia_google_satellite_z18.metadata.txt`.
+Review the provider's terms before redistributing the imagery.
 
-```text
-/Users/pma/QField/export/macedonia
-```
-
-Prune the rectangular QFieldSync output before deployment:
+Rebuild the JPEG-compressed tiled GeoTIFF and its internal overviews with:
 
 ```bash
-python3 scripts/prune_mbtiles_to_polygon.py \
-  --mbtiles /Users/pma/QField/export/macedonia/basemap.mbtiles \
-  --polygon qgis/macedonia/optimized_maps/Macedonia-EMI.kml \
-  --output qgis/macedonia/optimized_maps/basemap.mbtiles \
-  --buffer-tiles 1 --force
+python3 scripts/build_google_offline_basemap.py \
+  --output qgis/macedonia/optimized_maps/macedonia_google_satellite_z18.tif \
+  --force
 ```
 
-The generated basemap is intentionally ignored by Git. Validate it locally in
-QGIS/QField, and transfer it through the field packaging workflow rather than
-repository history.
+The buffered raster extent is `20.777,41.971,20.902,42.063`. It is deliberately
+larger than the field AOI, remains visible at every map scale, and uses internal
+overviews for fast zoomed-out rendering. Rebuilding requires network access;
+the provider can change the imagery or endpoint. The raster is transferred by
+the QField packaging/deployment workflow, never through Git or Git LFS.
+
+The online satellite layer remains underneath it as a connected fallback.
+Generated MBTiles are still prohibited. If another high-resolution source is
+used for a future mission, keep generated MBTiles out of repository history and
+prune them with `scripts/prune_mbtiles_to_polygon.py` before deployment.
 
 ## Release checklist
 
@@ -80,5 +84,7 @@ repository history.
 4. Confirm collector, subject, and species relations populate correctly.
 5. Test collection with a person who has no ORCID or iNaturalist username.
 6. Run `uv run ruff check .` and `uv run pytest`.
-7. Check repository size before committing; do not add field photos, sync
-   backups, or generated basemap tiles.
+7. Test a QFieldCloud download in airplane mode and confirm the Google z18
+   layer remains visible when the online satellite layer cannot connect.
+8. Check repository size before committing; do not add field photos, sync
+   backups, or generated MBTiles.

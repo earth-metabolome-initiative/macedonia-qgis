@@ -1,4 +1,7 @@
 *basemap*
+!scripts/build_google_offline_basemap.py
+!tests/test_build_google_offline_basemap.py
+qgis/macedonia/optimized_maps/macedonia_google_satellite_*.tif
 .venv/
 __pycache__/
 *.py[cod]
@@ -10,4 +13,5 @@ DCIM/
 *.qgs~
 *.gpkg-shm
 *.gpkg-wal
+*.aux.xml
 *_attachments.zip

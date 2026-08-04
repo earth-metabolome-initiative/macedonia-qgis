@@ -17,6 +17,8 @@ QFieldSync state, and regional taxonomic data.
 - Collector lookup: `qgis/macedonia/collector_list.gpkg`
 - Observation subject lookup: `qgis/macedonia/observation_subject.gpkg`
 - Field-area polygon: `qgis/macedonia/optimized_maps/Macedonia-EMI.gpkg`
+- Locally generated offline satellite map (ignored by Git):
+  `qgis/macedonia/optimized_maps/macedonia_google_satellite_z18.tif`
 - Orientation coordinates: `data/field_locations.csv`
 - Original field email: `docs/original_field_email.txt`
 - Template handoff notes: `TEMPLATE_NOTES.md`
@@ -33,12 +35,15 @@ QFieldSync state, and regional taxonomic data.
 
 ## Lightweight map strategy
 
-The repository stores only the small AOI polygon and coordinate CSV. It does
-not commit imagery, field photographs, QFieldSync backups, or generated
-MBTiles. The QGIS project uses an online satellite layer as the source for a
-QFieldSync offline export. Generate a bounded offline basemap only when
-packaging the field project, then prune it to the AOI with
-`scripts/prune_mbtiles_to_polygon.py` as documented in `CONTRIB.md`.
+The local project uses a buffered Google Satellite zoom-18 GeoTIFF for sharp
+offline orientation at every map scale. Its nominal ground resolution near the
+field area is about 0.44 m/pixel. The generated raster is deliberately ignored
+by Git; only its QGIS configuration, reproducible builder, and provenance are
+versioned. The live online satellite layer remains available as a fallback
+when connected.
+
+Field photographs, QFieldSync backups, and generated MBTiles remain excluded.
+See `CONTRIB.md` for source provenance, rebuilding, and deployment checks.
 
 ## Taxonomic workflow
 
