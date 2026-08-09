@@ -1,9 +1,17 @@
-fullname,firstname,lastname,laboratory,ORCID,iNat_username
-Nikola Geshkovski,Nikola,Geshkovski,,0000-0002-2073-5632,
-Petre Makreski,Petre,Makreski,,0000-0003-0662-5995,
-Olga Gigopulu,Olga,Gigopulu,,0000-0002-5557-8286,
-Filip Todorov,Filip,Todorov,,0009-0006-0817-4883,
-Danijela Mišić,Danijela,Mišić,"Institute for Biological Research Siniša Stanković",,
-Student participant,Student,participant,,,
-Pierre-Marie Allard,Pierre-Marie,Allard,COMMONS,0000-0003-3389-2191,@pmallard
-Emmanuel Defossez,Emmanuel,Defossez,,0000-0002-3279-9190,@manu_dfz
+fullname,firstname,lastname,email,laboratory,ORCID,iNat_username
+Nikola Geshkovski,Nikola,Geshkovski,,,0000-0002-2073-5632,
+Petre Makreski,Petre,Makreski,,,0000-0003-0662-5995,
+Olga Gigopulu,Olga,Gigopulu,olga.gigopulu@ff.ukim.edu.mk,University of Ss. Cyril and Methodius,0000-0002-5557-8286,@olgagigopulu
+Filip Todorov,Filip,Todorov,todorov03f@gmail.com,University of Ss. Cyril and Methodius,0009-0006-0817-4883,
+Danijela Mišić,Danijela,Mišić,dmisic@ibiss.bg.ac.rs,"University of Belgrade, Institute for Biological Research ""Siniša Stanković""",0000-0002-5419-0773,
+Student participant,Student,participant,,,,
+Pierre-Marie Allard,Pierre-Marie,Allard,pierre-marie.allard@unifr.ch,University of Fribourg,0000-0003-3389-2191,@pmallard
+Emmanuel Defossez,Emmanuel,Defossez,emmanuel.defossez@unine.ch,University of Neuchâtel,0000-0002-3279-9190,@manu_dfz
+Gjoshe Stefkov,Gjoshe,Stefkov,gstefkov@yahoo.com,University of Ss. Cyril and Methodius,0000-0002-5801-2931,
+Vladimir Krpach,Vladimir,Krpach,vkrpach@gmail.com,Institute of Ecology and Technology - University of Tetova,,
+Marijana Skoric,Marijana,Skoric,mdevic@ibiss.bg.ac.rs,"University of Belgrade, Institute for Biological Research ""Siniša Stanković""",0000-0002-3727-4692,
+Suzana Zivkovic,Suzana,Zivkovic,suzy@ibiss.bg.ac.rs,"University of Belgrade, Institute for Biological Research ""Siniša Stanković""",0000-0003-0280-5884,
+Jelena Bozunovic,Jelena,Bozunovic,jelena.boljevic@ibiss.bg.ac.rs,"University of Belgrade, Institute for Biological Research ""Siniša Stanković""",0000-0001-8755-4361,
+Milos Todorovic,Milos,Todorovic,milos.todorovic@ibiss.bg.ac.rs,"University of Belgrade, Institute for Biological Research ""Siniša Stanković""",0000-0002-8734-9146,
+Tijana Banjanac,Tijana,Banjanac,tbanjanac@ibiss.bg.ac.rs,"University of Belgrade, Institute for Biological Research ""Siniša Stanković""",0000-0001-9023-9135,
+Uros Gasic,Uros,Gasic,uros.gasic@ibiss.bg.ac.rs,"University of Belgrade, Institute for Biological Research ""Siniša Stanković""",0000-0001-5384-8396,

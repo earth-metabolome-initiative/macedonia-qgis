@@ -100,6 +100,48 @@ def test_active_observations_are_preserved_and_paths_match_identity() -> None:
                 assert picture == f"DCIM/macedonia/{sample_id}_{number:02}.jpg"
 
 
+def test_collector_roster_and_csv_match_geopackage() -> None:
+    csv_path = ROOT / "qgis/macedonia/collector_list.csv"
+    database = ROOT / "qgis/macedonia/collector_list.gpkg"
+    with csv_path.open(encoding="utf-8", newline="") as handle:
+        csv_rows = list(csv.DictReader(handle))
+    with sqlite3.connect(database) as connection:
+        connection.row_factory = sqlite3.Row
+        gpkg_rows = [
+            {key: (value or "") for key, value in dict(row).items()}
+            for row in connection.execute(
+                "SELECT fullname, firstname, lastname, email, laboratory, ORCID, "
+                "iNat_username FROM collector_list ORDER BY fid"
+            )
+        ]
+
+    expected_emails = {
+        "Pierre-Marie Allard": "pierre-marie.allard@unifr.ch",
+        "Emmanuel Defossez": "emmanuel.defossez@unine.ch",
+        "Olga Gigopulu": "olga.gigopulu@ff.ukim.edu.mk",
+        "Gjoshe Stefkov": "gstefkov@yahoo.com",
+        "Filip Todorov": "todorov03f@gmail.com",
+        "Vladimir Krpach": "vkrpach@gmail.com",
+        "Marijana Skoric": "mdevic@ibiss.bg.ac.rs",
+        "Suzana Zivkovic": "suzy@ibiss.bg.ac.rs",
+        "Jelena Bozunovic": "jelena.boljevic@ibiss.bg.ac.rs",
+        "Milos Todorovic": "milos.todorovic@ibiss.bg.ac.rs",
+        "Danijela Mišić": "dmisic@ibiss.bg.ac.rs",
+        "Tijana Banjanac": "tbanjanac@ibiss.bg.ac.rs",
+        "Uros Gasic": "uros.gasic@ibiss.bg.ac.rs",
+    }
+    by_name = {row["fullname"]: row for row in gpkg_rows}
+
+    assert csv_rows == gpkg_rows
+    assert len(gpkg_rows) == 16
+    assert {
+        name: by_name[name]["email"] for name in expected_emails
+    } == expected_emails
+    assert by_name["Pierre-Marie Allard"]["iNat_username"] == "@pmallard"
+    assert by_name["Emmanuel Defossez"]["iNat_username"] == "@manu_dfz"
+    assert by_name["Olga Gigopulu"]["iNat_username"] == "@olgagigopulu"
+
+
 def test_observation_identity_is_enforced_by_geopackage() -> None:
     database = ROOT / "qgis/macedonia/observations.gpkg"
     with sqlite3.connect(database) as connection:

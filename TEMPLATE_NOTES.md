@@ -17,6 +17,14 @@ baseline for the next EMI project, but create a separate empty schema copy.
   store while deriving that template.
 - ORCID and iNaturalist username are optional so students and external
   collaborators without accounts can collect records.
+- The collector lookup now stores email alongside name, institution, ORCID,
+  and normalized `@username` iNaturalist handles, and its CSV is tested against
+  the GeoPackage to prevent roster drift. This preserves all supplied contact
+  details while retaining `fullname` as the observation relation key. The
+  migration caveat is to preserve existing full-name spellings when field data
+  already references them, then repackage/re-download QField so devices receive
+  the expanded lookup schema; existing observation metadata is not
+  retroactively rewritten when contact details change.
 - The observation preview now uses the current `taxon_name_final` field rather
   than the stale `TaxonomicName` expression inherited from Manaslu.
 - A reproducible builder and exact source provenance are versioned for the
