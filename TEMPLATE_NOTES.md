@@ -93,6 +93,16 @@ baseline for the next EMI project, but create a separate empty schema copy.
   generated TIFF must remain ignored by Git and be transferred separately by
   the QField packaging/deployment workflow. Future AOIs must update the raster,
   metadata, relative layer reference, and tests together.
+- QField automatically pushes edits every 15 minutes, and the repository
+  includes a read-only attachment auditor for checking observation references
+  against a QFieldCloud inventory or an independently downloaded archive. This
+  supports QFieldCloud's per-project on-demand attachment download setting, so
+  devices do not automatically fetch one another's photos. The migration caveat
+  is that the Cloud switch is server-side and is not stored in the QGIS project:
+  first push every existing device, verify every reference in Cloud and in a
+  separate checksum-backed archive, then enable the switch and redistribute the
+  project. Existing device downloads are not removed automatically, and no
+  device-local original may be deleted merely because on-demand mode is active.
 
 ## New-project substitution checklist
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import json
 import re
+import shutil
 import sqlite3
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -49,6 +50,13 @@ def test_online_basemap_is_preserved_by_qfieldcloud_packaging() -> None:
     assert basemap.findtext("provider") == "wms"
     assert cloud_action is not None
     assert cloud_action.get("value") == "no_action"
+
+
+def test_qfield_automatically_pushes_field_edits() -> None:
+    root = ET.parse(PROJECT).getroot()
+
+    assert root.findtext(".//forceAutoPush") == "1"
+    assert root.findtext(".//forceAutoPushIntervalMins") == "15"
 
 
 def test_ignored_offline_satellite_is_configured_for_qfield_packaging() -> None:
@@ -164,8 +172,9 @@ def test_observation_identity_is_enforced_by_geopackage() -> None:
     } <= triggers
 
 
-def test_geopackage_rejects_malformed_and_duplicate_identity() -> None:
-    database = ROOT / "qgis/macedonia/observations.gpkg"
+def test_geopackage_rejects_malformed_and_duplicate_identity(tmp_path: Path) -> None:
+    database = tmp_path / "observations.gpkg"
+    shutil.copy2(ROOT / "qgis/macedonia/observations.gpkg", database)
     with sqlite3.connect(database) as connection:
         # GeoPackage spatial-index triggers expect functions supplied by
         # QGIS/OGR. These inserts have null geometry, so minimal stubs let

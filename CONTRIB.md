@@ -76,6 +76,45 @@ Generated MBTiles are still prohibited. If another high-resolution source is
 used for a future mission, keep generated MBTiles out of repository history and
 prune them with `scripts/prune_mbtiles_to_polygon.py` before deployment.
 
+## Protecting attachments with on-demand downloads
+
+The project automatically pushes local changes to QFieldCloud every 15 minutes
+while QField is running and connected. On the active QFieldCloud project,
+enable **Settings → On demand attachment files download**. This keeps a photo
+on its collecting device and in QFieldCloud without automatically copying every
+photo to every other device. A different device can still open and download an
+attachment when it is online.
+
+Treat this as a bandwidth setting, not as a backup. Before enabling it on an
+existing deployment:
+
+1. On every collecting device, open QField, push/synchronize, and wait for a
+   successful upload. Do not uninstall QField or clear its project data.
+2. Export the active project's QFieldCloud file inventory as JSON and audit it
+   against the live observation database:
+
+   ```bash
+   python3 scripts/audit_observation_attachments.py \
+     --database qgis/macedonia/observations.gpkg \
+     --cloud-files-json /path/to/qfieldcloud-files.json
+   ```
+
+3. Keep an independent downloaded copy of `DCIM/macedonia/` outside this Git
+   repository. Verify that copy and write a checksum manifest:
+
+   ```bash
+   python3 scripts/audit_observation_attachments.py \
+     --database qgis/macedonia/observations.gpkg \
+     --attachments-root /path/to/archive-root \
+     --manifest-out /path/to/archive-manifest.json
+   ```
+
+The archive root must contain `DCIM/macedonia/`. The audit fails on missing or
+empty required references, unexpected names, duplicate references, missing
+inventory files, or zero-byte files. Only a successful Cloud audit plus a
+successful independent-archive audit is grounds to remove a local copy, and
+field-device originals should normally be retained for the mission.
+
 ## Release checklist
 
 1. Confirm the project opens without broken vector layers.
@@ -88,3 +127,5 @@ prune them with `scripts/prune_mbtiles_to_polygon.py` before deployment.
    layer remains visible when the online satellite layer cannot connect.
 8. Check repository size before committing; do not add field photos, sync
    backups, or generated MBTiles.
+9. Run the attachment audit against the current QFieldCloud inventory and the
+   independent archive; both must pass before retiring any device-local copy.

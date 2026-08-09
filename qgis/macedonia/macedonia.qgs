@@ -4518,8 +4518,8 @@ def my_form_open(dialog, layer, feature):
       <createBaseMap type="bool">true</createBaseMap>
       <digitizingLogsLayer type="QString"></digitizingLogsLayer>
       <featureFormWizardModeEnabled type="bool">false</featureFormWizardModeEnabled>
-      <forceAutoPush type="int">0</forceAutoPush>
-      <forceAutoPushIntervalMins type="int">30</forceAutoPushIntervalMins>
+      <forceAutoPush type="int">1</forceAutoPush>
+      <forceAutoPushIntervalMins type="int">15</forceAutoPushIntervalMins>
       <forceStamping type="int">0</forceStamping>
       <geofencingBehavior type="int">1</geofencingBehavior>
       <geofencingIsActive type="int">0</geofencingIsActive>
