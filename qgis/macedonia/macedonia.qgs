@@ -1315,7 +1315,7 @@ def my_form_open(dialog, layer, feature):
       <customproperties>
         <Option type="Map">
           <Option type="QString" name="QFieldSync/action" value="copy"/>
-          <Option type="QString" name="QFieldSync/attachment_naming" value="{&quot;picture_panel&quot;: &quot;'DCIM/macedonia/'|| \&quot;sample_id\&quot;||'_01.jpg'&quot;, &quot;picture_general&quot;: &quot;'DCIM/macedonia/'|| \&quot;sample_id\&quot;||'_02.jpg'&quot;, &quot;picture_detail&quot;: &quot;'DCIM/macedonia/'|| \&quot;sample_id\&quot;||'_03.jpg'&quot;, &quot;picture_cut&quot;: &quot;'DCIM/macedonia/'|| \&quot;sample_id\&quot;||'_04.jpg'&quot;, &quot;picture_panel_label&quot;: &quot;'DCIM/macedonia/'|| \&quot;sample_id\&quot;||'_05.jpg'&quot;, &quot;picture_free&quot;: &quot;'DCIM/macedonia/'|| \&quot;sample_id\&quot;||'_06.jpg'&quot;}"/>
+          <Option type="QString" name="QFieldSync/attachment_naming" value="{&quot;picture_environment&quot;: &quot;'DCIM/macedonia/'|| \&quot;sample_id\&quot;||'_01.jpg'&quot;, &quot;picture_full_organism&quot;: &quot;'DCIM/macedonia/'|| \&quot;sample_id\&quot;||'_02.jpg'&quot;, &quot;picture_detail&quot;: &quot;'DCIM/macedonia/'|| \&quot;sample_id\&quot;||'_03.jpg'&quot;, &quot;picture_sampled_part&quot;: &quot;'DCIM/macedonia/'|| \&quot;sample_id\&quot;||'_04.jpg'&quot;, &quot;picture_sample_code&quot;: &quot;'DCIM/macedonia/'|| \&quot;sample_id\&quot;||'_05.jpg'&quot;, &quot;picture_free&quot;: &quot;'DCIM/macedonia/'|| \&quot;sample_id\&quot;||'_06.jpg'&quot;}"/>
           <Option type="invalid" name="QFieldSync/attribute_editing_locked_expression"/>
           <Option type="QString" name="QFieldSync/cloud_action" value="offline"/>
           <Option type="invalid" name="QFieldSync/feature_addition_locked_expression"/>
@@ -1546,14 +1546,14 @@ def my_form_open(dialog, layer, feature):
             </config>
           </editWidget>
         </field>
-        <field name="picture_panel" configurationFlags="NoFlag">
+        <field name="picture_environment" configurationFlags="NoFlag">
           <editWidget type="ExternalResource">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
-        <field name="picture_general" configurationFlags="NoFlag">
+        <field name="picture_full_organism" configurationFlags="NoFlag">
           <editWidget type="ExternalResource">
             <config>
               <Option type="Map">
@@ -1599,14 +1599,14 @@ def my_form_open(dialog, layer, feature):
             </config>
           </editWidget>
         </field>
-        <field name="picture_cut" configurationFlags="NoFlag">
+        <field name="picture_sampled_part" configurationFlags="NoFlag">
           <editWidget type="ExternalResource">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
-        <field name="picture_panel_label" configurationFlags="NoFlag">
+        <field name="picture_sample_code" configurationFlags="NoFlag">
           <editWidget type="ExternalResource">
             <config>
               <Option/>
@@ -1811,11 +1811,11 @@ def my_form_open(dialog, layer, feature):
         <alias name="Manual taxon entry" index="6" field="no_name_on_list"/>
         <alias name="" index="7" field="name_proposition"/>
         <alias name="" index="8" field="sample_id"/>
-        <alias name="" index="9" field="picture_panel"/>
-        <alias name="" index="10" field="picture_general"/>
+        <alias name="" index="9" field="picture_environment"/>
+        <alias name="" index="10" field="picture_full_organism"/>
         <alias name="" index="11" field="picture_detail"/>
-        <alias name="" index="12" field="picture_cut"/>
-        <alias name="" index="13" field="picture_panel_label"/>
+        <alias name="" index="12" field="picture_sampled_part"/>
+        <alias name="" index="13" field="picture_sample_code"/>
         <alias name="" index="14" field="picture_free"/>
         <alias name="" index="15" field="x_coord"/>
         <alias name="" index="16" field="y_coord"/>
@@ -1844,11 +1844,11 @@ def my_form_open(dialog, layer, feature):
         <policy policy="DefaultValue" field="no_name_on_list"/>
         <policy policy="DefaultValue" field="name_proposition"/>
         <policy policy="DefaultValue" field="sample_id"/>
-        <policy policy="Duplicate" field="picture_panel"/>
-        <policy policy="DefaultValue" field="picture_general"/>
+        <policy policy="Duplicate" field="picture_environment"/>
+        <policy policy="DefaultValue" field="picture_full_organism"/>
         <policy policy="DefaultValue" field="picture_detail"/>
-        <policy policy="Duplicate" field="picture_cut"/>
-        <policy policy="Duplicate" field="picture_panel_label"/>
+        <policy policy="Duplicate" field="picture_sampled_part"/>
+        <policy policy="Duplicate" field="picture_sample_code"/>
         <policy policy="Duplicate" field="picture_free"/>
         <policy policy="Duplicate" field="x_coord"/>
         <policy policy="Duplicate" field="y_coord"/>
@@ -1877,11 +1877,11 @@ def my_form_open(dialog, layer, feature):
         <policy policy="DefaultValue" field="no_name_on_list"/>
         <policy policy="DefaultValue" field="name_proposition"/>
         <policy policy="DefaultValue" field="sample_id"/>
-        <policy policy="DefaultValue" field="picture_panel"/>
-        <policy policy="DefaultValue" field="picture_general"/>
+        <policy policy="DefaultValue" field="picture_environment"/>
+        <policy policy="DefaultValue" field="picture_full_organism"/>
         <policy policy="DefaultValue" field="picture_detail"/>
-        <policy policy="DefaultValue" field="picture_cut"/>
-        <policy policy="DefaultValue" field="picture_panel_label"/>
+        <policy policy="DefaultValue" field="picture_sampled_part"/>
+        <policy policy="DefaultValue" field="picture_sample_code"/>
         <policy policy="DefaultValue" field="picture_free"/>
         <policy policy="DefaultValue" field="x_coord"/>
         <policy policy="DefaultValue" field="y_coord"/>
@@ -1910,11 +1910,11 @@ def my_form_open(dialog, layer, feature):
         <default expression="0" applyOnUpdate="0" field="no_name_on_list"/>
         <default expression="if(&quot;no_name_on_list&quot; = 0, NULL, coalesce(&quot;name_proposition&quot;, &quot;taxon_name&quot;))" applyOnUpdate="1" field="name_proposition"/>
         <default expression="" applyOnUpdate="0" field="sample_id"/>
-        <default expression="" applyOnUpdate="0" field="picture_panel"/>
-        <default expression="" applyOnUpdate="0" field="picture_general"/>
+        <default expression="" applyOnUpdate="0" field="picture_environment"/>
+        <default expression="" applyOnUpdate="0" field="picture_full_organism"/>
         <default expression="" applyOnUpdate="0" field="picture_detail"/>
-        <default expression="" applyOnUpdate="0" field="picture_cut"/>
-        <default expression="" applyOnUpdate="0" field="picture_panel_label"/>
+        <default expression="" applyOnUpdate="0" field="picture_sampled_part"/>
+        <default expression="" applyOnUpdate="0" field="picture_sample_code"/>
         <default expression="" applyOnUpdate="0" field="picture_free"/>
         <default expression="$x" applyOnUpdate="1" field="x_coord"/>
         <default expression="$y" applyOnUpdate="1" field="y_coord"/>
@@ -1943,11 +1943,11 @@ def my_form_open(dialog, layer, feature):
         <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="no_name_on_list"/>
         <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="name_proposition"/>
         <constraint notnull_strength="1" constraints="7" exp_strength="1" unique_strength="1" field="sample_id"/>
-        <constraint notnull_strength="1" constraints="1" exp_strength="0" unique_strength="0" field="picture_panel"/>
-        <constraint notnull_strength="1" constraints="1" exp_strength="0" unique_strength="0" field="picture_general"/>
+        <constraint notnull_strength="1" constraints="1" exp_strength="0" unique_strength="0" field="picture_environment"/>
+        <constraint notnull_strength="1" constraints="1" exp_strength="0" unique_strength="0" field="picture_full_organism"/>
         <constraint notnull_strength="1" constraints="1" exp_strength="0" unique_strength="0" field="picture_detail"/>
-        <constraint notnull_strength="1" constraints="1" exp_strength="0" unique_strength="0" field="picture_cut"/>
-        <constraint notnull_strength="1" constraints="1" exp_strength="0" unique_strength="0" field="picture_panel_label"/>
+        <constraint notnull_strength="1" constraints="1" exp_strength="0" unique_strength="0" field="picture_sampled_part"/>
+        <constraint notnull_strength="1" constraints="1" exp_strength="0" unique_strength="0" field="picture_sample_code"/>
         <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="picture_free"/>
         <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="x_coord"/>
         <constraint notnull_strength="0" constraints="0" exp_strength="0" unique_strength="0" field="y_coord"/>
@@ -1976,11 +1976,11 @@ def my_form_open(dialog, layer, feature):
         <constraint exp="" desc="" field="no_name_on_list"/>
         <constraint exp="" desc="" field="name_proposition"/>
         <constraint exp="coalesce(regexp_match(trim(&quot;sample_id&quot;), '^mcdn_[0-9]{6}$'), false)" desc="Sample ID must match mcdn_ followed by six digits" field="sample_id"/>
-        <constraint exp="" desc="" field="picture_panel"/>
-        <constraint exp="" desc="" field="picture_general"/>
+        <constraint exp="" desc="" field="picture_environment"/>
+        <constraint exp="" desc="" field="picture_full_organism"/>
         <constraint exp="" desc="" field="picture_detail"/>
-        <constraint exp="" desc="" field="picture_cut"/>
-        <constraint exp="" desc="" field="picture_panel_label"/>
+        <constraint exp="" desc="" field="picture_sampled_part"/>
+        <constraint exp="" desc="" field="picture_sample_code"/>
         <constraint exp="" desc="" field="picture_free"/>
         <constraint exp="" desc="" field="x_coord"/>
         <constraint exp="" desc="" field="y_coord"/>
@@ -1994,7 +1994,7 @@ def my_form_open(dialog, layer, feature):
         <constraint exp="" desc="" field="date"/>
         <constraint exp="" desc="" field="collector_orcid"/>
         <constraint exp="" desc="" field="collector_inat"/>
-        <constraint exp="coalesce(regexp_match(&quot;uuid_qfield&quot;, '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'), false)&#xa;  AND coalesce(&quot;picture_panel&quot;, '') &lt;> ''&#xa;  AND coalesce(&quot;picture_general&quot;, '') &lt;> ''&#xa;  AND coalesce(&quot;picture_detail&quot;, '') &lt;> ''&#xa;  AND coalesce(&quot;picture_cut&quot;, '') &lt;> ''&#xa;  AND coalesce(&quot;picture_panel_label&quot;, '') &lt;> ''" desc="A valid unique UUID and all five required photographs are required" field="uuid_qfield"/>
+        <constraint exp="coalesce(regexp_match(&quot;uuid_qfield&quot;, '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'), false)&#xa;  AND coalesce(&quot;picture_environment&quot;, '') &lt;> ''&#xa;  AND coalesce(&quot;picture_full_organism&quot;, '') &lt;> ''&#xa;  AND coalesce(&quot;picture_detail&quot;, '') &lt;> ''&#xa;  AND coalesce(&quot;picture_sampled_part&quot;, '') &lt;> ''&#xa;  AND coalesce(&quot;picture_sample_code&quot;, '') &lt;> ''" desc="A valid unique UUID and all five required photographs are required" field="uuid_qfield"/>
         <constraint exp="" desc="" field="MatchedCanonical"/>
         <constraint exp="" desc="" field="TaxonId"/>
         <constraint exp="" desc="" field="taxon_name_final"/>
@@ -2014,11 +2014,11 @@ def my_form_open(dialog, layer, feature):
           <column hidden="0" type="field" name="no_name_on_list" width="126"/>
           <column hidden="0" type="field" name="name_proposition" width="125"/>
           <column hidden="0" type="field" name="sample_id" width="117"/>
-          <column hidden="0" type="field" name="picture_panel" width="511"/>
-          <column hidden="0" type="field" name="picture_general" width="463"/>
+          <column hidden="0" type="field" name="picture_environment" width="511"/>
+          <column hidden="0" type="field" name="picture_full_organism" width="463"/>
           <column hidden="0" type="field" name="picture_detail" width="465"/>
-          <column hidden="0" type="field" name="picture_cut" width="463"/>
-          <column hidden="0" type="field" name="picture_panel_label" width="464"/>
+          <column hidden="0" type="field" name="picture_sampled_part" width="463"/>
+          <column hidden="0" type="field" name="picture_sample_code" width="464"/>
           <column hidden="0" type="field" name="picture_free" width="-1"/>
           <column hidden="0" type="field" name="x_coord" width="-1"/>
           <column hidden="0" type="field" name="y_coord" width="216"/>
@@ -2164,17 +2164,17 @@ def my_form_open(dialog, layer, feature):
             <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="0,0,0,255,rgb:0,0,0,1">
               <labelFont italic="0" style="" bold="0" underline="0" strikethrough="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0"/>
             </labelStyle>
-            <attributeEditorField name="picture_general" verticalStretch="0" showLabel="1" horizontalStretch="0" index="10">
+            <attributeEditorField name="picture_full_organism" verticalStretch="0" showLabel="1" horizontalStretch="0" index="10">
               <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="0,0,0,255,rgb:0,0,0,1">
                 <labelFont italic="0" style="" bold="0" underline="0" strikethrough="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0"/>
               </labelStyle>
             </attributeEditorField>
-            <attributeEditorField name="picture_panel" verticalStretch="0" showLabel="1" horizontalStretch="0" index="9">
+            <attributeEditorField name="picture_environment" verticalStretch="0" showLabel="1" horizontalStretch="0" index="9">
               <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="0,0,0,255,rgb:0,0,0,1">
                 <labelFont italic="0" style="" bold="0" underline="0" strikethrough="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0"/>
               </labelStyle>
             </attributeEditorField>
-            <attributeEditorField name="picture_panel_label" verticalStretch="0" showLabel="1" horizontalStretch="0" index="13">
+            <attributeEditorField name="picture_sample_code" verticalStretch="0" showLabel="1" horizontalStretch="0" index="13">
               <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="0,0,0,255,rgb:0,0,0,1">
                 <labelFont italic="0" style="" bold="0" underline="0" strikethrough="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0"/>
               </labelStyle>
@@ -2184,7 +2184,7 @@ def my_form_open(dialog, layer, feature):
                 <labelFont italic="0" style="" bold="0" underline="0" strikethrough="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0"/>
               </labelStyle>
             </attributeEditorField>
-            <attributeEditorField name="picture_cut" verticalStretch="0" showLabel="1" horizontalStretch="0" index="12">
+            <attributeEditorField name="picture_sampled_part" verticalStretch="0" showLabel="1" horizontalStretch="0" index="12">
               <labelStyle overrideLabelColor="0" overrideLabelFont="0" labelColor="0,0,0,255,rgb:0,0,0,1">
                 <labelFont italic="0" style="" bold="0" underline="0" strikethrough="0" description=".AppleSystemUIFont,13,-1,5,50,0,0,0,0,0"/>
               </labelStyle>
@@ -2264,12 +2264,12 @@ def my_form_open(dialog, layer, feature):
         <field name="name_proposition" editable="1"/>
         <field name="no_name_on_list" editable="1"/>
         <field name="observation_subject" editable="1"/>
-        <field name="picture_cut" editable="1"/>
+        <field name="picture_sampled_part" editable="1"/>
         <field name="picture_detail" editable="1"/>
         <field name="picture_free" editable="1"/>
-        <field name="picture_general" editable="1"/>
-        <field name="picture_panel" editable="1"/>
-        <field name="picture_panel_label" editable="1"/>
+        <field name="picture_full_organism" editable="1"/>
+        <field name="picture_environment" editable="1"/>
+        <field name="picture_sample_code" editable="1"/>
         <field name="sample_id" editable="1"/>
         <field name="sanitized_taxon_name" editable="1"/>
         <field name="soil_type" editable="1"/>
@@ -2300,12 +2300,12 @@ def my_form_open(dialog, layer, feature):
         <field name="name_proposition" labelOnTop="0"/>
         <field name="no_name_on_list" labelOnTop="0"/>
         <field name="observation_subject" labelOnTop="0"/>
-        <field name="picture_cut" labelOnTop="0"/>
+        <field name="picture_sampled_part" labelOnTop="0"/>
         <field name="picture_detail" labelOnTop="0"/>
         <field name="picture_free" labelOnTop="0"/>
-        <field name="picture_general" labelOnTop="0"/>
-        <field name="picture_panel" labelOnTop="0"/>
-        <field name="picture_panel_label" labelOnTop="0"/>
+        <field name="picture_full_organism" labelOnTop="0"/>
+        <field name="picture_environment" labelOnTop="0"/>
+        <field name="picture_sample_code" labelOnTop="0"/>
         <field name="sample_id" labelOnTop="0"/>
         <field name="sanitized_taxon_name" labelOnTop="0"/>
         <field name="soil_type" labelOnTop="0"/>
@@ -2336,12 +2336,12 @@ def my_form_open(dialog, layer, feature):
         <field reuseLastValue="0" name="name_proposition"/>
         <field reuseLastValue="0" name="no_name_on_list"/>
         <field reuseLastValue="0" name="observation_subject"/>
-        <field reuseLastValue="0" name="picture_cut"/>
+        <field reuseLastValue="0" name="picture_sampled_part"/>
         <field reuseLastValue="0" name="picture_detail"/>
         <field reuseLastValue="0" name="picture_free"/>
-        <field reuseLastValue="0" name="picture_general"/>
-        <field reuseLastValue="0" name="picture_panel"/>
-        <field reuseLastValue="0" name="picture_panel_label"/>
+        <field reuseLastValue="0" name="picture_full_organism"/>
+        <field reuseLastValue="0" name="picture_environment"/>
+        <field reuseLastValue="0" name="picture_sample_code"/>
         <field reuseLastValue="0" name="sample_id"/>
         <field reuseLastValue="0" name="sanitized_taxon_name"/>
         <field reuseLastValue="0" name="soil_type"/>

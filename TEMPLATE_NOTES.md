@@ -1,7 +1,9 @@
 # Template handoff notes
 
 This project was derived from `/Users/pma/git_repos/EMI/manaslu-qgis` on
-2026-08-03. Use it as the newer baseline for the next EMI QField project.
+2026-08-03. Field collection has started, so its observation store is active
+mission data and must never be emptied. Use the documented configuration as a
+baseline for the next EMI project, but create a separate empty schema copy.
 
 ## Improvements carried forward
 
@@ -10,8 +12,9 @@ This project was derived from `/Users/pma/git_repos/EMI/manaslu-qgis` on
   and polygon-aware MBTiles pruning logic are retained.
 - Mission records, photos, `.qfieldsync` state, backups, and country-specific
   Manaslu/Nepal taxon outputs are deliberately excluded.
-- New observation stores begin empty. Never copy observations from a previous
-  mission into a new template.
+- New observation stores begin empty. Never copy Macedonia's active field
+  observations into a new mission template, and never empty the Macedonia
+  store while deriving that template.
 - ORCID and iNaturalist username are optional so students and external
   collaborators without accounts can collect records.
 - The observation preview now uses the current `taxon_name_final` field rather
@@ -26,9 +29,10 @@ This project was derived from `/Users/pma/git_repos/EMI/manaslu-qgis` on
   canonicalization or higher taxa are required.
 - Original stakeholder location text is retained verbatim under `docs/` so
   later geographic interpretations remain auditable.
-- `tests/test_project_template.py` guards the prefix, attachment paths, empty
-  observation store, versioned offline-raster reference, absence of a generated
-  MBTiles reference, and containment of all supplied coordinates within the AOI.
+- `tests/test_project_template.py` guards the prefix, attachment paths, active
+  observation identities and picture-path consistency, ignored offline-raster
+  reference, absence of generated MBTiles, and containment of all supplied
+  coordinates within the AOI.
 - The sample-ID tab is always visible. Do not make its visibility depend on
   attachment fields: copied or restored attachment values can otherwise hide
   the scanner before a valid sample ID has been entered.
@@ -36,6 +40,14 @@ This project was derived from `/Users/pma/git_repos/EMI/manaslu-qgis` on
   the sample ID, UUID, attachment paths, coordinates, and timestamp. This
   prevents a copied feature from silently inheriting another sample's identity
   or metadata.
+- Picture fields use semantic names: `picture_environment`,
+  `picture_full_organism`, `picture_detail`, `picture_sampled_part`,
+  `picture_sample_code`, and `picture_free`. Their `_01.jpg` through `_06.jpg`
+  attachment numbering remains stable, and the first five remain required. The
+  migration caveat is that renaming GeoPackage columns changes the offline
+  schema: upload the updated project and replace/re-download existing QField
+  copies before collecting or syncing further edits; old-schema deltas must not
+  be merged into the renamed project.
 - `observations.gpkg` enforces valid, unique `mcdn_######` sample IDs and valid,
   unique UUIDs with database indexes and triggers in addition to QGIS form
   constraints. Reapply `scripts/harden_observations.sql` after rebuilding the

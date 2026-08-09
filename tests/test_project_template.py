@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import csv
+import json
+import re
 import sqlite3
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -73,12 +75,29 @@ def test_ignored_offline_satellite_is_configured_for_qfield_packaging() -> None:
     assert cloud_action.get("value") == "no_action"
 
 
-def test_template_observations_are_empty() -> None:
+def test_active_observations_are_preserved_and_paths_match_identity() -> None:
     database = ROOT / "qgis/macedonia/observations.gpkg"
     with sqlite3.connect(database) as connection:
-        count = connection.execute("SELECT COUNT(*) FROM observations").fetchone()[0]
+        rows = connection.execute(
+            "SELECT sample_id, uuid_qfield, picture_environment, "
+            "picture_full_organism, picture_detail, picture_sampled_part, "
+            "picture_sample_code, picture_free FROM observations"
+        ).fetchall()
 
-    assert count == 0
+    sample_ids = {row[0] for row in rows}
+    assert {"mcdn_000001", "mcdn_000002", "mcdn_000003", "mcdn_000004"} <= sample_ids
+    assert len(sample_ids) == len(rows)
+    assert len({row[1] for row in rows}) == len(rows)
+    for row in rows:
+        sample_id, uuid_qfield, *pictures = row
+        assert re.fullmatch(r"mcdn_[0-9]{6}", sample_id)
+        assert re.fullmatch(
+            r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}",
+            uuid_qfield,
+        )
+        for number, picture in enumerate(pictures, start=1):
+            if picture:
+                assert picture == f"DCIM/macedonia/{sample_id}_{number:02}.jpg"
 
 
 def test_observation_identity_is_enforced_by_geopackage() -> None:
@@ -124,19 +143,19 @@ def test_geopackage_rejects_malformed_and_duplicate_identity() -> None:
 
             connection.execute(
                 "INSERT INTO observations(sample_id, uuid_qfield) VALUES (?, ?)",
-                ("mcdn_000001", "00000000-0000-4000-8000-000000000001"),
+                ("mcdn_999998", "00000000-0000-4000-8000-000000000001"),
             )
 
             with pytest.raises(sqlite3.IntegrityError):
                 connection.execute(
                     "INSERT INTO observations(sample_id, uuid_qfield) VALUES (?, ?)",
-                    ("mcdn_000001", "00000000-0000-4000-8000-000000000002"),
+                    ("mcdn_999998", "00000000-0000-4000-8000-000000000002"),
                 )
 
             with pytest.raises(sqlite3.IntegrityError):
                 connection.execute(
                     "INSERT INTO observations(sample_id, uuid_qfield) VALUES (?, ?)",
-                    ("mcdn_000002", "00000000-0000-4000-8000-000000000001"),
+                    ("mcdn_999997", "00000000-0000-4000-8000-000000000001"),
                 )
         finally:
             connection.execute("ROLLBACK TO identity_test")
@@ -165,11 +184,11 @@ def test_observation_form_cannot_hide_or_copy_identity() -> None:
     protected_fields = {
         "sample_id",
         "uuid_qfield",
-        "picture_panel",
-        "picture_general",
+        "picture_environment",
+        "picture_full_organism",
         "picture_detail",
-        "picture_cut",
-        "picture_panel_label",
+        "picture_sampled_part",
+        "picture_sample_code",
         "picture_free",
         "x_coord",
         "y_coord",
@@ -178,6 +197,45 @@ def test_observation_form_cannot_hide_or_copy_identity() -> None:
     assert all(
         duplicate_policies[field] == "DefaultValue" for field in protected_fields
     )
+
+
+def test_picture_field_names_and_attachment_numbering_are_current() -> None:
+    expected_fields = {
+        "picture_environment": "_01.jpg",
+        "picture_full_organism": "_02.jpg",
+        "picture_detail": "_03.jpg",
+        "picture_sampled_part": "_04.jpg",
+        "picture_sample_code": "_05.jpg",
+        "picture_free": "_06.jpg",
+    }
+    database = ROOT / "qgis/macedonia/observations.gpkg"
+    with sqlite3.connect(database) as connection:
+        columns = {row[1] for row in connection.execute("PRAGMA table_info(observations)")}
+
+    root = ET.parse(PROJECT).getroot()
+    observations = next(
+        layer
+        for layer in root.findall(".//maplayer")
+        if layer.findtext("layername") == "observations"
+    )
+    naming_option = observations.find(
+        ".//Option[@name='QFieldSync/attachment_naming']"
+    )
+    assert naming_option is not None
+    attachment_naming = json.loads(naming_option.get("value", "{}"))
+
+    assert expected_fields.keys() <= columns
+    assert set(attachment_naming) == set(expected_fields)
+    assert all(
+        suffix in attachment_naming[field]
+        for field, suffix in expected_fields.items()
+    )
+    assert not {
+        "picture_panel",
+        "picture_general",
+        "picture_cut",
+        "picture_panel_label",
+    } & columns
 
 
 def test_species_lookup_contains_col_higher_taxa_across_kingdoms() -> None:
