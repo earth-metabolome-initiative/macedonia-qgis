@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis saveUser="pma" projectname="macedonia" saveDateTime="2026-08-10T20:17:28" version="3.40.5-Bratislava" saveUserFull="pma">
+<qgis saveUser="pma" projectname="macedonia" saveDateTime="2026-08-10T20:40:45" version="3.40.5-Bratislava" saveUserFull="pma">
   <homePath path=""/>
   <title>macedonia</title>
   <transaction mode="Disabled"/>
@@ -38,7 +38,7 @@
     <layer-tree-layer expanded="1" legend_split_behavior="0" legend_exp="" id="macedonia_854e20dc_43c1_47af_99b2_77fecdfb7814" providerKey="ogr" checked="Qt::Checked" name="observations" source="./observations.gpkg|layername=observations" patch_size="-1,-1">
       <customproperties>
         <Option type="Map">
-          <Option value="1" type="int" name="overview"/>
+          <Option value="0" type="int" name="overview"/>
           <Option value="1" type="int" name="showFeatureCount"/>
         </Option>
       </customproperties>
@@ -105,10 +105,10 @@
   <mapcanvas name="theMapCanvas" annotationsVisible="1">
     <units>degrees</units>
     <extent>
-      <xmin>21.12157678540619443</xmin>
-      <ymin>42.18262459390093255</ymin>
-      <xmax>21.13476948614043849</xmax>
-      <ymax>42.18933062230274089</ymax>
+      <xmin>21.12486564856759585</xmin>
+      <ymin>42.18644869770223949</ymin>
+      <xmax>21.12878585203930371</xmax>
+      <ymax>42.18844139020330175</ymax>
     </extent>
     <rotation>0</rotation>
     <destinationsrs>
@@ -131,7 +131,7 @@
   <legend updateDrawingOrder="true">
     <legendlayer open="true" showFeatureCount="1" checked="Qt::Checked" drawingOrder="-1" name="observations">
       <filegroup open="true" hidden="false">
-        <legendlayerfile layerid="macedonia_854e20dc_43c1_47af_99b2_77fecdfb7814" visible="1" isInOverview="1"/>
+        <legendlayerfile layerid="macedonia_854e20dc_43c1_47af_99b2_77fecdfb7814" visible="1" isInOverview="0"/>
       </filegroup>
     </legendlayer>
     <legendlayer open="true" showFeatureCount="0" checked="Qt::Checked" drawingOrder="-1" name="observation_subject">
@@ -1345,6 +1345,7 @@ def my_form_open(dialog, layer, feature):
           <Option type="List" name="dualview/previewExpressions">
             <Option value="&quot;taxon_name_final&quot;" type="QString"/>
             <Option value="taxon_name_final" type="QString"/>
+            <Option value="&quot;taxon_name_final&quot;" type="QString"/>
           </Option>
           <Option value="0" type="int" name="embeddedWidgets/count"/>
           <Option type="invalid" name="variableNames"/>
@@ -2046,11 +2047,11 @@ def my_form_open(dialog, layer, feature):
           <column hidden="0" width="328" type="field" name="comment_env"/>
           <column hidden="0" width="236" type="field" name="date"/>
           <column hidden="0" width="-1" type="field" name="collector_orcid"/>
-          <column hidden="0" width="94" type="field" name="collector_inat"/>
+          <column hidden="0" width="101" type="field" name="collector_inat"/>
           <column hidden="0" width="-1" type="field" name="uuid_qfield"/>
           <column hidden="0" width="127" type="field" name="MatchedCanonical"/>
           <column hidden="0" width="-1" type="field" name="TaxonId"/>
-          <column hidden="0" width="-1" type="field" name="taxon_name_final"/>
+          <column hidden="0" width="118" type="field" name="taxon_name_final"/>
           <column hidden="1" width="-1" type="actions"/>
         </columns>
       </attributetableconfig>
@@ -4579,7 +4580,7 @@ def my_form_open(dialog, layer, feature):
   <Sensors/>
   <ProjectViewSettings UseProjectScales="0" rotation="0">
     <Scales/>
-    <DefaultViewExtent ymax="42.189525487400239" xmin="21.12157678540619443" ymin="42.18242972880343444" xmax="21.13476948614043849">
+    <DefaultViewExtent ymax="42.18849929425549306" xmin="21.12486564856759585" ymin="42.18639079365004818" xmax="21.12878585203930371">
       <spatialrefsys nativeFormat="Wkt">
         <wkt>GEOGCRS["WGS 84",ENSEMBLE["World Geodetic System 1984 ensemble",MEMBER["World Geodetic System 1984 (Transit)"],MEMBER["World Geodetic System 1984 (G730)"],MEMBER["World Geodetic System 1984 (G873)"],MEMBER["World Geodetic System 1984 (G1150)"],MEMBER["World Geodetic System 1984 (G1674)"],MEMBER["World Geodetic System 1984 (G1762)"],ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]],ENSEMBLEACCURACY[2.0]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["World."],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
         <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
