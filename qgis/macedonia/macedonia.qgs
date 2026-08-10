@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis saveUser="pma" projectname="macedonia" saveDateTime="2026-08-10T20:08:25" version="3.40.5-Bratislava" saveUserFull="pma">
+<qgis saveUser="pma" projectname="macedonia" saveDateTime="2026-08-10T20:17:28" version="3.40.5-Bratislava" saveUserFull="pma">
   <homePath path=""/>
   <title>macedonia</title>
   <transaction mode="Disabled"/>
@@ -825,7 +825,7 @@
           <column hidden="0" width="130" type="field" name="laboratory"/>
           <column hidden="0" width="-1" type="field" name="ORCID"/>
           <column hidden="0" width="-1" type="field" name="iNat_username"/>
-          <column hidden="0" width="-1" type="field" name="email"/>
+          <column hidden="0" width="260" type="field" name="email"/>
           <column hidden="1" width="-1" type="actions"/>
         </columns>
       </attributetableconfig>
