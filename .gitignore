@@ -15,3 +15,5 @@ DCIM/
 *.gpkg-wal
 *.aux.xml
 *_attachments.zip
+data/macedonia_backup/
+.*.rescue-*.gpkg

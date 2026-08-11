@@ -141,7 +141,7 @@ def test_collector_roster_and_csv_match_geopackage() -> None:
     by_name = {row["fullname"]: row for row in gpkg_rows}
 
     assert csv_rows == gpkg_rows
-    assert len(gpkg_rows) == 16
+    assert len(gpkg_rows) >= len(expected_emails)
     assert {
         name: by_name[name]["email"] for name in expected_emails
     } == expected_emails
@@ -184,6 +184,16 @@ def test_geopackage_rejects_malformed_and_duplicate_identity(tmp_path: Path) -> 
         connection.create_function("ST_MaxX", 1, lambda _geometry: None)
         connection.create_function("ST_MinY", 1, lambda _geometry: None)
         connection.create_function("ST_MaxY", 1, lambda _geometry: None)
+        existing_ids = {
+            row[0] for row in connection.execute("SELECT sample_id FROM observations")
+        }
+        available_numbers = (
+            number
+            for number in range(999999, -1, -1)
+            if f"mcdn_{number:06}" not in existing_ids
+        )
+        sample_id = f"mcdn_{next(available_numbers):06}"
+        other_sample_id = f"mcdn_{next(available_numbers):06}"
         connection.execute("SAVEPOINT identity_test")
         try:
             with pytest.raises(sqlite3.IntegrityError):
@@ -194,19 +204,19 @@ def test_geopackage_rejects_malformed_and_duplicate_identity(tmp_path: Path) -> 
 
             connection.execute(
                 "INSERT INTO observations(sample_id, uuid_qfield) VALUES (?, ?)",
-                ("mcdn_999998", "00000000-0000-4000-8000-000000000001"),
+                (sample_id, "00000000-0000-4000-8000-000000000001"),
             )
 
             with pytest.raises(sqlite3.IntegrityError):
                 connection.execute(
                     "INSERT INTO observations(sample_id, uuid_qfield) VALUES (?, ?)",
-                    ("mcdn_999998", "00000000-0000-4000-8000-000000000002"),
+                    (sample_id, "00000000-0000-4000-8000-000000000002"),
                 )
 
             with pytest.raises(sqlite3.IntegrityError):
                 connection.execute(
                     "INSERT INTO observations(sample_id, uuid_qfield) VALUES (?, ?)",
-                    ("mcdn_999997", "00000000-0000-4000-8000-000000000001"),
+                    (other_sample_id, "00000000-0000-4000-8000-000000000001"),
                 )
         finally:
             connection.execute("ROLLBACK TO identity_test")

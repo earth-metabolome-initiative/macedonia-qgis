@@ -95,14 +95,22 @@ baseline for the next EMI project, but create a separate empty schema copy.
   metadata, relative layer reference, and tests together.
 - QField automatically pushes edits every 15 minutes, and the repository
   includes a read-only attachment auditor for checking observation references
-  against a QFieldCloud inventory or an independently downloaded archive. This
-  supports QFieldCloud's per-project on-demand attachment download setting, so
-  devices do not automatically fetch one another's photos. The migration caveat
-  is that the Cloud switch is server-side and is not stored in the QGIS project:
-  first push every existing device, verify every reference in Cloud and in a
-  separate checksum-backed archive, then enable the switch and redistribute the
-  project. Existing device downloads are not removed automatically, and no
-  device-local original may be deleted merely because on-demand mode is active.
+  against a QFieldCloud inventory or an independently downloaded archive. The
+  intended on-demand attachment download mode is server-side and is not stored
+  in the QGIS project; the current self-hosted deployment does not expose that
+  feature, so all-device attachment downloads remain expected until the server
+  is deliberately upgraded and tested. Automatic pushing and audits remain
+  useful independently. Never delete a device-local original merely because a
+  Cloud file listing contains its name.
+- `merge_qfield_device_export.py` provides an append-only, dry-run-first rescue
+  path for exports from devices that cannot synchronize. It auto-detects the
+  hashed QFieldCloud observations table, rejects identity/content conflicts,
+  verifies and collision-checks attachments, validates a temporary candidate,
+  refuses a live QGIS database even for dry runs, and uses atomic replacement only with
+  `--apply`. The migration caveat is that schema changes or legitimate edits to
+  existing observations are intentionally not auto-merged; preserve every
+  original per-device export outside Git and resolve reported conflicts before
+  changing the mission database.
 
 ## New-project substitution checklist
 

@@ -115,6 +115,62 @@ inventory files, or zero-byte files. Only a successful Cloud audit plus a
 successful independent-archive audit is grounds to remove a local copy, and
 field-device originals should normally be retained for the mission.
 
+## Recovering a QField device export
+
+Keep every phone export in its own directory outside the Git repository. Never
+combine or overwrite phone archives. A preferred export has this structure:
+
+```text
+phone-or-collector-name/
+├── data.gpkg
+├── deltafile.json
+└── DCIM/
+    └── macedonia/
+        └── mcdn_######_01.jpg
+```
+
+Copying the phone's `DCIM` directory directly into the project is unnecessary:
+the rescue tool reads it from the device export, checks for filename/content
+collisions, and installs only attachments belonging to new observations. The
+project's `DCIM` directory remains ignored by Git.
+
+Close QGIS, then perform the default read-only dry run:
+
+```bash
+python3 scripts/merge_qfield_device_export.py \
+  /path/to/phone-or-collector-name
+```
+
+The tool auto-detects QFieldCloud's hashed observation table. It requires the
+same `mcdn_######` and UUID identity, schema, geometry, attachment naming, and
+media files as the main project. Identical records are skipped. A reused sample
+ID, reused UUID, changed existing record, missing attachment, truncated media,
+or same attachment name with different content stops the operation without
+changing the project.
+
+After reviewing the proposed IDs, apply the same command explicitly:
+
+```bash
+python3 scripts/merge_qfield_device_export.py \
+  /path/to/phone-or-collector-name \
+  --apply \
+  --report-out /path/to/external-recovery-log/phone-or-collector-name.json
+```
+
+Both dry runs and applied merges refuse to start while QGIS has the target open;
+copying a live SQLite file can capture an inconsistent in-progress index. The
+merge is append-only. It builds and fully validates a temporary candidate,
+verifies that the main database did not change during the run, installs missing
+attachments without overwriting different content, and atomically replaces the
+main GeoPackage. Process one phone at a time, commit the validated
+`observations.gpkg` after each phone, and retain the original phone export and
+external JSON report until the entire mission has been reconciled. Reports and
+phone backups must not be committed.
+
+For legacy exports whose pictures were already copied into the project's
+ignored `DCIM` directory, the default fallback uses that directory. A separate
+photo source can be supplied explicitly with `--source-attachments-root`.
+
 ## Release checklist
 
 1. Confirm the project opens without broken vector layers.
