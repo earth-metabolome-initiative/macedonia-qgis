@@ -1,5 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis saveUser="pma" saveUserFull="pma" version="3.40.5-Bratislava" projectname="macedonia" saveDateTime="2026-08-11T13:31:20">
+<qgis saveUser="pma" saveUserFull="pma" version="3.40.5-Bratislava" projectname="macedonia" saveDateTime="2026-08-11T13:56:45">
   <homePath path=""/>
   <title>macedonia</title>
   <transaction mode="Disabled"/>
@@ -105,10 +105,10 @@
   <mapcanvas annotationsVisible="1" name="theMapCanvas">
     <units>degrees</units>
     <extent>
-      <xmin>21.12684023307611625</xmin>
-      <ymin>42.18586128592746576</ymin>
-      <xmax>21.12792295522847752</xmax>
-      <ymax>42.18641164825667289</ymax>
+      <xmin>21.12754806751259906</xmin>
+      <ymin>42.18288060924356131</ymin>
+      <xmax>21.1433046081018432</xmax>
+      <ymax>42.19088987215557296</ymax>
     </extent>
     <rotation>0</rotation>
     <destinationsrs>
@@ -1343,8 +1343,6 @@ def my_form_open(dialog, layer, feature):
           <Option type="int" name="QFieldSync/tracking_time_requirement_interval_seconds" value="30"/>
           <Option type="int" name="QFieldSync/value_map_button_interface_threshold" value="0"/>
           <Option type="List" name="dualview/previewExpressions">
-            <Option type="QString" value="&quot;taxon_name_final&quot;"/>
-            <Option type="QString" value="taxon_name_final"/>
             <Option type="QString" value="&quot;taxon_name_final&quot;"/>
           </Option>
           <Option type="int" name="embeddedWidgets/count" value="0"/>
@@ -4580,7 +4578,7 @@ def my_form_open(dialog, layer, feature):
   <Sensors/>
   <ProjectViewSettings UseProjectScales="0" rotation="0">
     <Scales/>
-    <DefaultViewExtent xmax="21.12792295522847752" ymin="42.18584529339020861" ymax="42.18642764079393004" xmin="21.12684023307611625">
+    <DefaultViewExtent xmax="21.1433046081018432" ymin="42.18264787450009123" ymax="42.19112260689904303" xmin="21.12754806751259906">
       <spatialrefsys nativeFormat="Wkt">
         <wkt>GEOGCRS["WGS 84",ENSEMBLE["World Geodetic System 1984 ensemble",MEMBER["World Geodetic System 1984 (Transit)"],MEMBER["World Geodetic System 1984 (G730)"],MEMBER["World Geodetic System 1984 (G873)"],MEMBER["World Geodetic System 1984 (G1150)"],MEMBER["World Geodetic System 1984 (G1674)"],MEMBER["World Geodetic System 1984 (G1762)"],ELLIPSOID["WGS 84",6378137,298.257223563,LENGTHUNIT["metre",1]],ENSEMBLEACCURACY[2.0]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["geodetic latitude (Lat)",north,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["geodetic longitude (Lon)",east,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]],USAGE[SCOPE["Horizontal component of 3D system."],AREA["World."],BBOX[-90,-180,90,180]],ID["EPSG",4326]]</wkt>
         <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
