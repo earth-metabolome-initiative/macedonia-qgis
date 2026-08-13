@@ -116,7 +116,13 @@ baseline for the next EMI project, but create a separate empty schema copy.
   change, not a QFieldCloud delta: freeze synchronization, start from the latest
   Cloud file, merge all exports, then explicitly select **Local file** for the
   observation GeoPackage in QFieldSync before any further pull. Otherwise the
-  older Cloud file can replace the rescued rows.
+  older Cloud file can replace the rescued rows. Rescue validation applies the
+  strict attachment naming and required-picture contract to newly appended
+  rows, while unchanged existing rows are preserved byte-for-byte and their
+  referenced files are still checked for existence and valid media content.
+  This permits recovery when active field data contains an older attachment
+  naming anomaly; the migration caveat is that the anomaly remains explicit
+  and must not be "fixed" by fabricating or silently renaming field imagery.
 
 ## New-project substitution checklist
 
@@ -132,6 +138,12 @@ an empty schema copy and verify its feature count is zero. Do not copy a prior
 country's species database; fetch the new AOI or country and rebuild it.
 
 ## Known follow-ups
+
+- `mcdn_000100` is a confirmed physical duplicate-label case. Manu's active
+  bryophyte row and Jovana's held-out *Hypericum perforatum* row have different
+  UUIDs and photo sets, but both code photographs show `000100`. Keep the case
+  quarantined and follow `docs/mcdn_000100_quarantine.md`; do not infer physical
+  custody or assign a replacement identifier without reviewed evidence.
 
 - The field dates were supplied as 7–11 August without a year; do not invent
   one in metadata.

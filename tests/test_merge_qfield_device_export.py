@@ -225,6 +225,53 @@ def test_build_candidate_inserts_point_and_spatial_index(tmp_path: Path) -> None
         candidate.unlink()
 
 
+def test_build_candidate_preserves_legacy_picture_path_on_existing_row(
+    tmp_path: Path,
+) -> None:
+    target = tmp_path / "observations.gpkg"
+    source = tmp_path / "data.gpkg"
+    create_geopackage(target, "observations", target=True)
+    create_geopackage(source, SOURCE_TABLE, target=False)
+    existing_id = "mcdn_000001"
+    existing_uuid = "00000000-0000-4000-8000-000000000001"
+    legacy_path = "DCIM/macedonia/mcdn_000370_04.jpg"
+    insert_observation(target, "observations", existing_id, existing_uuid)
+    insert_observation(source, SOURCE_TABLE, existing_id, existing_uuid)
+    write_photos(tmp_path, existing_id)
+    for path, table in ((target, "observations"), (source, SOURCE_TABLE)):
+        with sqlite3.connect(path) as connection:
+            connection.execute(
+                f'UPDATE "{table}" SET picture_sampled_part = ? WHERE sample_id = ?',
+                (legacy_path, existing_id),
+            )
+    legacy_photo = tmp_path / legacy_path
+    legacy_photo.parent.mkdir(parents=True, exist_ok=True)
+    legacy_photo.write_bytes(b"\xff\xd8legacy-photo\xff\xd9")
+
+    insert_observation(
+        source,
+        SOURCE_TABLE,
+        "mcdn_000002",
+        "00000000-0000-4000-8000-000000000002",
+    )
+    write_photos(tmp_path, "mcdn_000002")
+
+    plan = rescue.plan_rescue(source, target, tmp_path, tmp_path)
+    assert plan.conflicts == ()
+    assert plan.common_ids == (existing_id,)
+    assert plan.new_ids == ("mcdn_000002",)
+
+    candidate = rescue.build_candidate(target, tmp_path, tmp_path, plan)
+    try:
+        with sqlite3.connect(candidate) as connection:
+            assert connection.execute(
+                "SELECT picture_sampled_part FROM observations WHERE sample_id = ?",
+                (existing_id,),
+            ).fetchone()[0] == legacy_path
+    finally:
+        candidate.unlink()
+
+
 def test_nonempty_wal_blocks_even_dry_run(tmp_path: Path) -> None:
     target = tmp_path / "observations.gpkg"
     target.touch()

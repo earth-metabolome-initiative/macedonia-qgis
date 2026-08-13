@@ -12,7 +12,7 @@ QFieldSync state, and regional taxonomic data.
 ## Main files
 
 - QGIS/QField project: `qgis/macedonia/macedonia.qgs`
-- Empty active observation layer: `qgis/macedonia/observations.gpkg`
+- Active observation layer: `qgis/macedonia/observations.gpkg`
 - Regional species lookup: `qgis/macedonia/species_list.gpkg`
 - Collector lookup: `qgis/macedonia/collector_list.gpkg`
 - Observation subject lookup: `qgis/macedonia/observation_subject.gpkg`
@@ -21,6 +21,7 @@ QFieldSync state, and regional taxonomic data.
   `qgis/macedonia/optimized_maps/macedonia_google_satellite_z18.tif`
 - Orientation coordinates: `data/field_locations.csv`
 - Original field email: `docs/original_field_email.txt`
+- Duplicate-label quarantine: `docs/mcdn_000100_quarantine.md`
 - Template handoff notes: `TEMPLATE_NOTES.md`
 
 ## QField conventions

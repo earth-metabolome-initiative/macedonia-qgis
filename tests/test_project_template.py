@@ -12,6 +12,9 @@ import pytest
 
 ROOT = Path(__file__).parents[1]
 PROJECT = ROOT / "qgis/macedonia/macedonia.qgs"
+QUARANTINED_SAMPLE_ID = "mcdn_000100"
+QUARANTINED_MANU_UUID = "67c6df7b-7538-438b-ae4c-d5881a98bd35"
+QUARANTINED_JOVANA_UUID = "6cb125a1-8496-427d-a84b-fd3f4dd30260"
 
 
 def test_project_is_valid_xml_and_uses_macedonia_identifiers() -> None:
@@ -84,6 +87,10 @@ def test_ignored_offline_satellite_is_configured_for_qfield_packaging() -> None:
 
 
 def test_active_observations_are_preserved_and_paths_match_identity() -> None:
+    legacy_picture_paths = {
+        ("mcdn_000356", 4): "DCIM/macedonia/mcdn_000370_04.jpg",
+    }
+    seen_legacy_paths: set[tuple[str, int]] = set()
     database = ROOT / "qgis/macedonia/observations.gpkg"
     with sqlite3.connect(database) as connection:
         rows = connection.execute(
@@ -105,7 +112,36 @@ def test_active_observations_are_preserved_and_paths_match_identity() -> None:
         )
         for number, picture in enumerate(pictures, start=1):
             if picture:
-                assert picture == f"DCIM/macedonia/{sample_id}_{number:02}.jpg"
+                key = (sample_id, number)
+                expected = legacy_picture_paths.get(
+                    key, f"DCIM/macedonia/{sample_id}_{number:02}.jpg"
+                )
+                assert picture == expected
+                if key in legacy_picture_paths:
+                    seen_legacy_paths.add(key)
+    assert seen_legacy_paths == set(legacy_picture_paths)
+
+
+def test_duplicate_label_case_remains_quarantined() -> None:
+    database = ROOT / "qgis/macedonia/observations.gpkg"
+    with sqlite3.connect(database) as connection:
+        active_rows = connection.execute(
+            "SELECT uuid_qfield, collector_fullname, taxon_name_final "
+            "FROM observations WHERE sample_id = ?",
+            (QUARANTINED_SAMPLE_ID,),
+        ).fetchall()
+
+    assert active_rows == [
+        (QUARANTINED_MANU_UUID, "Emmanuel Defossez", "Bryophyta")
+    ]
+    assert all(row[0] != QUARANTINED_JOVANA_UUID for row in active_rows)
+
+    documentation = (
+        ROOT / "docs/mcdn_000100_quarantine.md"
+    ).read_text(encoding="utf-8")
+    assert QUARANTINED_MANU_UUID in documentation
+    assert QUARANTINED_JOVANA_UUID in documentation
+    assert "Held only in Jovana's device export" in documentation
 
 
 def test_collector_roster_and_csv_match_geopackage() -> None:

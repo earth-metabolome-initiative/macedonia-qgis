@@ -176,13 +176,18 @@ def inspect_attachment(
     return Attachment(normalized, size, sha256_file(path), media_type)
 
 
-def validate_row(sample_id: str, row: dict[str, Any]) -> list[str]:
+def validate_identity(sample_id: str, row: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     if not isinstance(sample_id, str) or SAMPLE_ID_PATTERN.fullmatch(sample_id) is None:
         errors.append(f"invalid sample ID: {sample_id!r}")
     uuid = row.get("uuid_qfield")
     if not isinstance(uuid, str) or UUID_PATTERN.fullmatch(uuid) is None:
         errors.append(f"{sample_id}: invalid uuid_qfield: {uuid!r}")
+    return errors
+
+
+def validate_row(sample_id: str, row: dict[str, Any]) -> list[str]:
+    errors = validate_identity(sample_id, row)
     for number, field in enumerate(PICTURE_FIELDS, start=1):
         value = row.get(field)
         if not value:
@@ -247,7 +252,7 @@ def plan_rescue(
             )
         target_uuids[uuid] = sample_id
     for sample_id, row in source_rows.items():
-        conflicts.extend(validate_row(sample_id, row))
+        conflicts.extend(validate_identity(sample_id, row))
         uuid = row["uuid_qfield"]
         if uuid in source_uuids:
             conflicts.append(
@@ -287,6 +292,9 @@ def plan_rescue(
             )
             continue
         new_ids.append(sample_id)
+
+    for sample_id in new_ids:
+        conflicts.extend(validate_row(sample_id, source_rows[sample_id]))
 
     attachments: dict[str, Attachment] = {}
     if not conflicts:
@@ -442,9 +450,10 @@ def validate_candidate(
             if rows.get(sample_id) != plan.source_rows[sample_id]:
                 raise RescueError(f"candidate did not preserve rescued observation: {sample_id}")
         for sample_id, row in rows.items():
-            row_errors = validate_row(sample_id, row)
-            if row_errors:
-                raise RescueError("; ".join(row_errors))
+            if sample_id in plan.new_ids:
+                row_errors = validate_row(sample_id, row)
+                if row_errors:
+                    raise RescueError("; ".join(row_errors))
             for field in PICTURE_FIELDS:
                 value = row[field]
                 if value:
