@@ -140,6 +140,31 @@ def test_plan_rescue_rejects_different_existing_record(tmp_path: Path) -> None:
     assert plan.new_ids == ()
 
 
+def test_plan_rescue_separates_same_identity_attribute_changes(tmp_path: Path) -> None:
+    target = tmp_path / "observations.gpkg"
+    source = tmp_path / "data.gpkg"
+    create_geopackage(target, "observations", target=True)
+    create_geopackage(source, SOURCE_TABLE, target=False)
+    sample_id = "mcdn_000001"
+    uuid = "00000000-0000-4000-8000-000000000001"
+    insert_observation(target, "observations", sample_id, uuid)
+    insert_observation(source, SOURCE_TABLE, sample_id, uuid)
+    with sqlite3.connect(source) as connection:
+        connection.execute(
+            f'UPDATE "{SOURCE_TABLE}" SET picture_free = ? WHERE sample_id = ?',
+            ("DCIM/macedonia/mcdn_000001_06.jpg", sample_id),
+        )
+
+    plan = rescue.plan_rescue(source, target, tmp_path)
+
+    assert plan.conflicts == ()
+    assert plan.common_ids == ()
+    assert plan.new_ids == ()
+    assert plan.existing_differences == (
+        "existing observation differs mcdn_000001: picture_free",
+    )
+
+
 def test_plan_rescue_rejects_missing_new_attachment(tmp_path: Path) -> None:
     target = tmp_path / "observations.gpkg"
     source = tmp_path / "data.gpkg"
@@ -200,10 +225,19 @@ def test_build_candidate_inserts_point_and_spatial_index(tmp_path: Path) -> None
         candidate.unlink()
 
 
-def test_target_sidecar_blocks_even_dry_run(tmp_path: Path) -> None:
+def test_nonempty_wal_blocks_even_dry_run(tmp_path: Path) -> None:
+    target = tmp_path / "observations.gpkg"
+    target.touch()
+    Path(f"{target}-wal").write_bytes(b"pending transaction")
+
+    with pytest.raises(rescue.RescueError, match="uncheckpointed SQLite WAL"):
+        rescue.ensure_target_is_closed(target)
+
+
+def test_inert_wal_sidecars_do_not_block(tmp_path: Path) -> None:
     target = tmp_path / "observations.gpkg"
     target.touch()
     Path(f"{target}-wal").touch()
+    Path(f"{target}-shm").touch()
 
-    with pytest.raises(rescue.RescueError, match="active SQLite sidecars"):
-        rescue.ensure_target_is_closed(target)
+    rescue.ensure_target_is_closed(target)

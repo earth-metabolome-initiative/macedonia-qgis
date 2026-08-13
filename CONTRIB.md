@@ -134,7 +134,13 @@ the rescue tool reads it from the device export, checks for filename/content
 collisions, and installs only attachments belonging to new observations. The
 project's `DCIM` directory remains ignored by Git.
 
-Close QGIS, then perform the default read-only dry run:
+Freeze normal QFieldCloud synchronization before starting a multi-phone rescue.
+First let every healthy phone push its outstanding work, synchronize the latest
+Cloud copy to this Git checkout once, and then close QGIS. That synchronized
+GeoPackage is the rescue base. Do not pull from Cloud again until all phone
+exports have been appended and the consolidated local file has been uploaded.
+
+Perform the default read-only dry run:
 
 ```bash
 python3 scripts/merge_qfield_device_export.py \
@@ -147,6 +153,12 @@ media files as the main project. Identical records are skipped. A reused sample
 ID, reused UUID, changed existing record, missing attachment, truncated media,
 or same attachment name with different content stops the operation without
 changing the project.
+
+If a newer Cloud base legitimately changed an observation that is also present
+in an older phone export, review the reported fields and add
+`--keep-target-existing`. This preserves the Cloud/base row byte-for-byte and
+only appends absent sample IDs. It never permits a reused sample ID with another
+UUID or a reused UUID with another sample ID.
 
 After reviewing the proposed IDs, apply the same command explicitly:
 
@@ -166,6 +178,14 @@ main GeoPackage. Process one phone at a time, commit the validated
 `observations.gpkg` after each phone, and retain the original phone export and
 external JSON report until the entire mission has been reconciled. Reports and
 phone backups must not be committed.
+
+An applied rescue changes the local GeoPackage; it is not a QFieldCloud delta.
+After every export has been merged, open the QFieldSync synchronization dialog
+and choose **Local file** for `observations.gpkg` so the consolidated file
+replaces the older Cloud copy. Choosing **Cloud file**, or doing a normal pull
+first, discards the locally rescued rows. Verify the resulting Cloud record and
+attachment counts with one pilot device before allowing the other devices to
+resume synchronization.
 
 For legacy exports whose pictures were already copied into the project's
 ignored `DCIM` directory, the default fallback uses that directory. A separate

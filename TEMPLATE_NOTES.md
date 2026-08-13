@@ -110,7 +110,13 @@ baseline for the next EMI project, but create a separate empty schema copy.
   `--apply`. The migration caveat is that schema changes or legitimate edits to
   existing observations are intentionally not auto-merged; preserve every
   original per-device export outside Git and resolve reported conflicts before
-  changing the mission database.
+  changing the mission database. For reviewed same-ID-and-UUID attribute
+  differences, `--keep-target-existing` can explicitly preserve the newer base
+  version while appending only absent rows. A rescue append is a local file
+  change, not a QFieldCloud delta: freeze synchronization, start from the latest
+  Cloud file, merge all exports, then explicitly select **Local file** for the
+  observation GeoPackage in QFieldSync before any further pull. Otherwise the
+  older Cloud file can replace the rescued rows.
 
 ## New-project substitution checklist
 

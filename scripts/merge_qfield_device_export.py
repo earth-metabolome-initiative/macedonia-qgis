@@ -50,6 +50,7 @@ class RescuePlan:
     target_count: int
     common_ids: tuple[str, ...]
     new_ids: tuple[str, ...]
+    existing_differences: tuple[str, ...]
     conflicts: tuple[str, ...]
     attachments: tuple[Attachment, ...]
     compared_columns: tuple[str, ...]
@@ -256,6 +257,7 @@ def plan_rescue(
 
     common_ids: list[str] = []
     new_ids: list[str] = []
+    existing_differences: list[str] = []
     for sample_id, source_row in source_rows.items():
         target_row = target_rows.get(sample_id)
         if target_row is not None:
@@ -271,7 +273,7 @@ def plan_rescue(
                 if source_row[column] != target_row[column]
             ]
             if changed:
-                conflicts.append(
+                existing_differences.append(
                     f"existing observation differs {sample_id}: {', '.join(changed)}"
                 )
             else:
@@ -314,6 +316,7 @@ def plan_rescue(
         target_count=len(target_rows),
         common_ids=tuple(sorted(common_ids)),
         new_ids=tuple(sorted(new_ids)),
+        existing_differences=tuple(sorted(existing_differences)),
         conflicts=tuple(conflicts),
         attachments=tuple(attachments[path] for path in sorted(attachments)),
         compared_columns=compared_columns,
@@ -336,18 +339,22 @@ def process_using(path: Path) -> str | None:
 
 
 def ensure_target_is_closed(target: Path) -> None:
-    sidecars = [
-        Path(f"{target}-wal"),
-        Path(f"{target}-shm"),
-        Path(f"{target}-journal"),
-    ]
-    existing_sidecars = [str(path) for path in sidecars if path.exists()]
-    if existing_sidecars:
-        raise RescueError(f"target has active SQLite sidecars: {existing_sidecars}")
-    usage = process_using(target)
-    if usage:
-        first_line = usage.splitlines()[0]
-        raise RescueError(f"target is open in another process ({first_line}); close QGIS first")
+    wal = Path(f"{target}-wal")
+    shm = Path(f"{target}-shm")
+    journal = Path(f"{target}-journal")
+    for path in (target, wal, shm, journal):
+        usage = process_using(path)
+        if usage:
+            first_line = usage.splitlines()[0]
+            raise RescueError(
+                f"target is open in another process ({first_line}); close QGIS first"
+            )
+    if journal.exists():
+        raise RescueError(f"target has an active SQLite rollback journal: {journal}")
+    if wal.exists() and wal.stat().st_size > 0:
+        raise RescueError(f"target has an uncheckpointed SQLite WAL: {wal}")
+    # SQLite can leave an empty WAL and its SHM file behind after a clean close.
+    # With no process holding any database file, those inert sidecars are safe.
 
 
 def gpkg_point_coordinates(value: bytes | None) -> tuple[float, float] | None:
@@ -554,6 +561,7 @@ def report_payload(
         "target_observation_count_before": plan.target_count,
         "target_observation_count_after": plan.target_count + len(plan.new_ids),
         "identical_existing_ids": list(plan.common_ids),
+        "target_versions_preserved": list(plan.existing_differences),
         "rescued_ids": list(plan.new_ids),
         "attachments": [attachment.__dict__ for attachment in plan.attachments],
     }
@@ -588,6 +596,14 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--device-name")
     parser.add_argument("--report-out", type=Path)
+    parser.add_argument(
+        "--keep-target-existing",
+        action="store_true",
+        help=(
+            "preserve the target version when the same sample ID and UUID have "
+            "different attributes, while still appending genuinely new rows"
+        ),
+    )
     parser.add_argument("--apply", action="store_true")
     args = parser.parse_args()
     if args.data_gpkg is None:
@@ -623,6 +639,17 @@ def main() -> None:
         if plan.new_ids:
             print(f"New sample IDs: {', '.join(plan.new_ids)}")
         print(f"Verified new attachment files: {len(plan.attachments)}")
+        if plan.existing_differences:
+            for difference in plan.existing_differences:
+                print(f"EXISTING DIFFERENCE: {difference}")
+            if not args.keep_target_existing:
+                raise RescueError(
+                    "existing observations changed; nothing was changed. Review them, "
+                    "then use --keep-target-existing to preserve the target versions"
+                )
+            print(
+                "Target versions of differing existing observations will be preserved"
+            )
         if plan.conflicts:
             for conflict in plan.conflicts:
                 print(f"CONFLICT: {conflict}")
@@ -658,6 +685,10 @@ def main() -> None:
             candidate = None
             applied = True
             print(f"Applied: main database now has {plan.target_count + len(plan.new_ids)} observations")
+            print(
+                "NEXT: do not pull/synchronize from Cloud. In QFieldSync, upload "
+                "observations.gpkg by choosing the Local file first."
+            )
         elif args.apply:
             print("Applied: no new observations; target was already up to date")
         else:
